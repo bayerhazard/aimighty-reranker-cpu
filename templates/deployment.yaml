@@ -1,499 +1,296 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: reranker-nginx
-  namespace: '{{ .Release.Namespace }}'
+  name: reranker-dashboard
+  namespace: {{ .Release.Namespace }}
 data:
   nginx.conf: |
     server {
         listen 8080;
         root /usr/share/nginx/html;
         index index.html;
-
-        # Status UI
         location / {
             try_files $uri $uri/ /index.html;
         }
-
-        # Proxy zur SGLang API (cluster-intern)
         location /health {
             proxy_pass http://localhost:30000/health;
-            proxy_set_header Host $host;
         }
         location /v1/ {
             proxy_pass http://localhost:30000/v1/;
-            proxy_set_header Host $host;
             proxy_read_timeout 120s;
+        }
+        location /metrics {
+            proxy_pass http://localhost:30000/metrics;
         }
         location /get_model_info {
             proxy_pass http://localhost:30000/get_model_info;
         }
     }
-
   index.html: |
     <!DOCTYPE html>
-    <html lang="de">
+    <html lang="en">
     <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Reranker — Status</title>
-      <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-          background: #0f1117;
-          color: #e2e8f0;
-          min-height: 100vh;
-          padding: 2rem;
-        }
-        .container { max-width: 860px; margin: 0 auto; }
-        h1 {
-          font-size: 1.6rem;
-          font-weight: 700;
-          margin-bottom: 0.25rem;
-          color: #fff;
-        }
-        .subtitle { color: #64748b; font-size: 0.9rem; margin-bottom: 2rem; }
-        .card {
-          background: #1e2330;
-          border: 1px solid #2d3748;
-          border-radius: 12px;
-          padding: 1.5rem;
-          margin-bottom: 1.25rem;
-        }
-        .card h2 {
-          font-size: 0.75rem;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          color: #64748b;
-          margin-bottom: 1rem;
-        }
-        .status-row {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-        }
-        .badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.4rem;
-          padding: 0.35rem 0.85rem;
-          border-radius: 999px;
-          font-size: 0.85rem;
-          font-weight: 600;
-        }
-        .badge.ok   { background: #14532d; color: #4ade80; }
-        .badge.err  { background: #450a0a; color: #f87171; }
-        .badge.wait { background: #1e3a5f; color: #60a5fa; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-        .status-detail { color: #94a3b8; font-size: 0.875rem; }
-        .info-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 0.75rem;
-        }
-        .info-item label {
-          display: block;
-          font-size: 0.75rem;
-          color: #64748b;
-          margin-bottom: 0.2rem;
-        }
-        .info-item span {
-          font-size: 0.9rem;
-          color: #e2e8f0;
-          font-family: 'SF Mono', 'Fira Code', monospace;
-        }
-        .endpoint-block {
-          background: #0f1117;
-          border: 1px solid #2d3748;
-          border-radius: 8px;
-          padding: 1rem 1.25rem;
-          margin-bottom: 0.75rem;
-        }
-        .endpoint-block .method {
-          display: inline-block;
-          background: #7c3aed;
-          color: #fff;
-          font-size: 0.7rem;
-          font-weight: 700;
-          padding: 0.15rem 0.5rem;
-          border-radius: 4px;
-          margin-right: 0.5rem;
-          font-family: monospace;
-        }
-        .endpoint-block .path {
-          font-family: monospace;
-          color: #a78bfa;
-          font-size: 0.9rem;
-        }
-        .endpoint-block .desc {
-          font-size: 0.8rem;
-          color: #64748b;
-          margin-top: 0.25rem;
-        }
-        pre {
-          background: #0f1117;
-          border: 1px solid #2d3748;
-          border-radius: 8px;
-          padding: 1rem;
-          font-size: 0.78rem;
-          line-height: 1.6;
-          overflow-x: auto;
-          color: #86efac;
-          font-family: 'SF Mono', 'Fira Code', monospace;
-        }
-        .tabs { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
-        .tab {
-          padding: 0.35rem 0.9rem;
-          border-radius: 6px;
-          font-size: 0.8rem;
-          cursor: pointer;
-          border: 1px solid #2d3748;
-          background: transparent;
-          color: #64748b;
-          transition: all 0.15s;
-        }
-        .tab.active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .refreshed { font-size: 0.75rem; color: #475569; margin-top: 0.5rem; }
-        .btn-refresh {
-          background: #2d3748;
-          border: none;
-          color: #94a3b8;
-          padding: 0.3rem 0.8rem;
-          border-radius: 6px;
-          font-size: 0.78rem;
-          cursor: pointer;
-          margin-left: 0.75rem;
-        }
-        .btn-refresh:hover { background: #374151; color: #e2e8f0; }
-      </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Aimighty Reranker &mdash; Qwen3-Reranker-0.6B</title>
+    <link rel="icon" type="image/png" href="https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png">
+    <style>
+      *,*::before,*::after{box-sizing:border-box}
+      html,body{margin:0;padding:0}
+      body{
+        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+        background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%);
+        color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+        padding:2rem 1rem;
+      }
+      .card{
+        width:100%;max-width:860px;
+        background:rgba(15,23,42,.72);
+        border:1px solid rgba(148,163,184,.15);
+        border-radius:20px;padding:2.5rem;
+        backdrop-filter:blur(20px);
+        box-shadow:0 25px 50px -12px rgba(0,0,0,.5);
+      }
+      .header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+      .icon{width:64px;height:64px;border-radius:14px;background:#fff;padding:6px;flex-shrink:0}
+      h1{margin:0;font-size:1.75rem;font-weight:700;letter-spacing:-.02em}
+      .subtitle{margin:.25rem 0 0;color:#94a3b8;font-size:.95rem}
+      .badge{
+        display:inline-flex;align-items:center;gap:.5rem;
+        margin-top:.75rem;padding:.35rem .75rem;
+        border-radius:999px;font-size:.8rem;font-weight:600;
+      }
+      .badge.ready{background:rgba(16,185,129,.12);border:1px solid #10b98155;color:#10b981}
+      .badge.offline{background:rgba(239,68,68,.12);border:1px solid #ef444455;color:#ef4444}
+      .dot{width:8px;height:8px;border-radius:50%}
+      .dot.ready{background:#10b981;box-shadow:0 0 12px #10b981}
+      .dot.offline{background:#ef4444;box-shadow:0 0 12px #ef4444}
+      h2{margin:2rem 0 .75rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#64748b}
+      .metrics{
+        display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem;
+        margin-bottom:.25rem;
+      }
+      .metric{
+        padding:.85rem 1rem;background:rgba(30,41,59,.4);
+        border:1px solid rgba(148,163,184,.1);border-radius:10px;
+      }
+      .metric-label{
+        font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;font-weight:700;
+      }
+      .metric-value{
+        margin-top:.3rem;color:#e2e8f0;font-size:1.15rem;font-weight:600;
+        font-family:"SF Mono",Monaco,Consolas,monospace;
+      }
+      .endpoints{display:grid;gap:.5rem}
+      .endpoint{
+        display:flex;align-items:center;gap:.75rem;
+        padding:.75rem 1rem;background:rgba(30,41,59,.5);
+        border:1px solid rgba(148,163,184,.1);border-radius:10px;
+        font-family:"SF Mono",Monaco,Consolas,monospace;font-size:.85rem;
+      }
+      .method{
+        flex-shrink:0;font-weight:700;font-size:.7rem;
+        padding:.2rem .5rem;border-radius:5px;letter-spacing:.05em;
+      }
+      .method.GET{background:rgba(59,130,246,.2);color:#60a5fa}
+      .method.POST{background:rgba(168,85,247,.2);color:#c084fc}
+      .path{color:#e2e8f0;flex:1}
+      .desc{color:#64748b;font-size:.8rem;font-family:-apple-system,sans-serif}
+      pre{
+        margin:0;padding:1.25rem;background:#020617;
+        border:1px solid rgba(148,163,184,.1);border-radius:10px;
+        font-family:"SF Mono",Monaco,Consolas,monospace;font-size:.8rem;
+        color:#cbd5e1;overflow-x:auto;line-height:1.6;
+      }
+      .kw{color:#f472b6}.str{color:#86efac}.num{color:#fbbf24}
+      .meta{
+        display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+        gap:.75rem;margin-top:1rem;
+      }
+      .meta-item{
+        padding:.85rem 1rem;background:rgba(30,41,59,.4);
+        border:1px solid rgba(148,163,184,.1);border-radius:10px;
+      }
+      .meta-label{
+        font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;font-weight:700;
+      }
+      .meta-value{
+        margin-top:.3rem;color:#e2e8f0;font-size:.95rem;font-weight:600;
+        font-family:"SF Mono",Monaco,Consolas,monospace;
+      }
+      footer{margin-top:2rem;padding-top:1.25rem;border-top:1px solid rgba(148,163,184,.1);color:#64748b;font-size:.8rem;text-align:center}
+      a{color:#60a5fa;text-decoration:none;transition:color .15s}
+      a:hover{color:#93c5fd}
+      @media(max-width:600px){.card{padding:1.5rem}.metrics{grid-template-columns:1fr 1fr}}
+    </style>
     </head>
     <body>
-      <div class="container">
-        <h1>⚡ Qwen3 Reranker</h1>
-        <p class="subtitle">Qwen3-Reranker-0.6B · SGLang · NVIDIA RTX 5090 (Blackwell/cu130)</p>
-
-        <!-- Health -->
-        <div class="card">
-          <h2>Server Status
-            <button class="btn-refresh" onclick="refresh()">↺ Aktualisieren</button>
-          </h2>
-          <div class="status-row">
-            <span id="badge" class="badge wait"><span class="dot"></span>Prüfe…</span>
-            <span id="status-detail" class="status-detail"></span>
-          </div>
-          <p id="refreshed" class="refreshed"></p>
+    <div class="card">
+      <div class="header">
+        <img class="icon" src="https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png" alt="Aimighty Reranker">
+        <div>
+          <h1>Aimighty Reranker</h1>
+          <p class="subtitle">Qwen3-Reranker-0.6B &middot; SGLang &middot; NVIDIA RTX 5090 (Blackwell)</p>
+          <span class="badge ready" id="statusBadge"><span class="dot ready" id="statusDot"></span><span id="statusText">Ready</span></span>
         </div>
-
-        <!-- Model Info -->
-        <div class="card">
-          <h2>Modell</h2>
-          <div class="info-grid" id="model-grid">
-            <div class="info-item"><label>Modell</label><span id="m-name">–</span></div>
-            <div class="info-item"><label>Max Context</label><span id="m-ctx">–</span></div>
-            <div class="info-item"><label>Dtype</label><span>bfloat16</span></div>
-            <div class="info-item"><label>Backend</label><span>SGLang · FA4 · cu130</span></div>
-          </div>
-        </div>
-
-        <!-- Endpoints -->
-        <div class="card">
-          <h2>Endpunkte</h2>
-          <div class="endpoint-block">
-            <span class="method">POST</span>
-            <span class="path">/v1/rerank</span>
-            <div class="desc">Reranking — Jina/Cohere-kompatibel (nicht OpenAI, OpenAI hat keinen Rerank-Endpunkt)</div>
-          </div>
-          <div class="endpoint-block">
-            <span class="method">GET</span>
-            <span class="path">/health</span>
-            <div class="desc">Health-Check — gibt HTTP 200 zurück wenn bereit</div>
-          </div>
-          <div class="endpoint-block">
-            <span class="method">GET</span>
-            <span class="path">/v1/models</span>
-            <div class="desc">Listet verfügbare Modelle</div>
-          </div>
-        </div>
-
-        <!-- Code Examples -->
-        <div class="card">
-          <h2>Einbindung</h2>
-          <div class="tabs">
-            <button class="tab active" onclick="showTab('curl')">curl</button>
-            <button class="tab" onclick="showTab('python')">Python</button>
-            <button class="tab" onclick="showTab('ragflow')">RAGFlow</button>
-          </div>
-
-          <div id="tab-curl" class="tab-content active">
-            <pre>curl -X POST http://reranker.&lt;namespace&gt;:30000/v1/rerank \
-    -H "Content-Type: application/json" \
-    -d '{
-    "model": "Qwen/Qwen3-Reranker-0.6B",
-    "query": "Was ist die Hauptstadt von Deutschland?",
-    "documents": [
-      "Berlin ist die Hauptstadt Deutschlands.",
-      "Paris liegt an der Seine."
-    ],
-    "instruct": "Given a web search query, retrieve relevant passages that answer the query.",
-    "top_n": 2,
-    "return_documents": true
-    }'</pre>
-          </div>
-
-          <div id="tab-python" class="tab-content">
-            <pre>import requests
-
-    def rerank(query: str, documents: list[str], top_n: int = 5):
-    resp = requests.post(
-        "http://reranker.&lt;namespace&gt;:30000/v1/rerank",
-        json={
-            "model": "Qwen/Qwen3-Reranker-0.6B",
-            "query": query,
-            "documents": documents,
-            "instruct": "Given a web search query, retrieve relevant passages that answer the query.",
-            "top_n": top_n,
-            "return_documents": True,
-        },
-        timeout=30,
-    )
-    resp.raise_for_status()
-    return sorted(resp.json(), key=lambda x: x["score"], reverse=True)</pre>
-          </div>
-
-          <div id="tab-ragflow" class="tab-content">
-            <pre># RAGFlow: Avatar > Model Providers > SGLang > Add Model
-    #
-    # Model type:  Rerank
-    # Model name:  Qwen3-Reranker-0.6B
-    # Base URL:    http://reranker.&lt;namespace&gt;:30000
-    # API Key:     (leer lassen)
-    #
-    # Danach unter System Model Settings als
-    # Rerank Model auswählen.</pre>
-          </div>
-        </div>
-
       </div>
-
-      <script>
-        async function refresh() {
-          const badge = document.getElementById('badge');
-          const detail = document.getElementById('status-detail');
-          const ts = document.getElementById('refreshed');
-          badge.className = 'badge wait';
-          badge.innerHTML = '<span class="dot"></span>Prüfe…';
-          detail.textContent = '';
-
-          try {
-            const [h, m] = await Promise.all([
-              fetch('/health').then(r => ({ ok: r.ok, status: r.status })),
-              fetch('/v1/models').then(r => r.ok ? r.json() : null).catch(() => null),
-            ]);
-
-            if (h.ok) {
-              badge.className = 'badge ok';
-              badge.innerHTML = '<span class="dot"></span>Online';
-              detail.textContent = 'SGLang antwortet — Modell geladen und bereit';
-            } else {
-              badge.className = 'badge err';
-              badge.innerHTML = '<span class="dot"></span>Fehler';
-              detail.textContent = 'HTTP ' + h.status + ' — Server noch nicht bereit?';
-            }
-
-            if (m && m.data && m.data.length > 0) {
-              const mdl = m.data[0];
-              document.getElementById('m-name').textContent = mdl.id || '–';
-              document.getElementById('m-ctx').textContent =
-                mdl.context_length ? mdl.context_length.toLocaleString() + ' Tokens' : '32 768 Tokens';
-            }
-          } catch (e) {
-            badge.className = 'badge err';
-            badge.innerHTML = '<span class="dot"></span>Nicht erreichbar';
-            detail.textContent = e.message;
-          }
-
-          ts.textContent = 'Zuletzt aktualisiert: ' + new Date().toLocaleTimeString('de-DE');
-        }
-
-        function showTab(id) {
-          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-          document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-          document.getElementById('tab-' + id).classList.add('active');
-          event.target.classList.add('active');
-        }
-
-        refresh();
-        setInterval(refresh, 30000);
-      </script>
+      <h2>Live Metrics</h2>
+      <div class="metrics" id="metricsGrid">
+        <div class="metric"><div class="metric-label">Latency P50</div><div class="metric-value" id="metLatency">&mdash;</div></div>
+        <div class="metric"><div class="metric-label">Requests Active</div><div class="metric-value" id="metRunning">&mdash;</div></div>
+        <div class="metric"><div class="metric-label">Queue Depth</div><div class="metric-value" id="metQueue">&mdash;</div></div>
+        <div class="metric"><div class="metric-label">KV-Cache Usage</div><div class="metric-value" id="metCache">&mdash;</div></div>
+        <div class="metric"><div class="metric-label">GPU Memory</div><div class="metric-value" id="metGpu">&mdash;</div></div>
+        <div class="metric"><div class="metric-label">Uptime</div><div class="metric-value" id="metUptime">&mdash;</div></div>
+      </div>
+      <h2>API Endpoints</h2>
+      <div class="endpoints">
+        <div class="endpoint"><span class="method POST">POST</span><span class="path">/v1/rerank</span><span class="desc">Rerank documents (Cohere/Jina-compatible)</span></div>
+        <div class="endpoint"><span class="method GET">GET</span><span class="path">/v1/models</span><span class="desc">List available models</span></div>
+        <div class="endpoint"><span class="method GET">GET</span><span class="path">/health</span><span class="desc">Liveness probe</span></div>
+        <div class="endpoint"><span class="method GET">GET</span><span class="path">/metrics</span><span class="desc">Prometheus metrics</span></div>
+      </div>
+      <h2>Quick Start</h2>
+      <pre><span class="kw">curl</span> -X POST <span class="str">"http://reranker:30000/v1/rerank"</span> \
+      -H <span class="str">"Content-Type: application/json"</span> \
+      -d <span class="str">'{
+        "model": "Qwen/Qwen3-Reranker-0.6B",
+        "query": "capital of Germany",
+        "documents": ["Berlin is the capital.", "Paris is in France."],
+        "top_n": 2
+      }'</span></pre>
+      <h2>Model Info</h2>
+      <div class="meta">
+        <div class="meta-item"><div class="meta-label">Model</div><div class="meta-value" id="mName">Qwen3-Reranker-0.6B</div></div>
+        <div class="meta-item"><div class="meta-label">Backend</div><div class="meta-value">SGLang + FlashInfer</div></div>
+        <div class="meta-item"><div class="meta-label">Context</div><div class="meta-value" id="mCtx">8192 tokens</div></div>
+        <div class="meta-item"><div class="meta-label">GPU</div><div class="meta-value">RTX 5090 24 GB</div></div>
+        <div class="meta-item"><div class="meta-label">Quantization</div><div class="meta-value">bfloat16</div></div>
+        <div class="meta-item"><div class="meta-label">KV-Cache Pages</div><div class="meta-value" id="mPages">16384 x 1</div></div>
+      </div>
+      <footer>
+        Built for <a href="https://github.com/bayerhazard/aimighty-reranker" target="_blank" rel="noopener">Olares</a> &middot;
+        <a href="https://huggingface.co/Qwen/Qwen3-Reranker-0.6B" target="_blank" rel="noopener">Qwen3-Reranker-0.6B</a> &middot;
+        <a href="https://github.com/sgl-project/sglang" target="_blank" rel="noopener">SGLang</a>
+        &middot; Auto-refresh: <span style="color:#60a5fa" id="lastRefresh">&mdash;</span>
+      </footer>
+    </div>
+    <script>
+    let startTime=Date.now();
+    function parseMetrics(t){let m={};for(let l of t.split("\n")){if(l.startsWith("#")||!l.trim())continue;let si=l.lastIndexOf(" ");if(si===-1)continue;let np=l.substring(0,si),v=parseFloat(l.substring(si+1)),bi=np.indexOf("{"),n=bi===-1?np:np.substring(0,bi),lb={};if(bi!==-1){np.substring(bi+1,np.indexOf("}")).split(",").forEach(p=>{let[k,val]=p.split("=");if(k&&val)lb[k.trim()]=val.replace(/"/g,"").trim()})}m[n]={value:v,labels:lb}}return m}
+    async function refresh(){try{let[mr,mod]=await Promise.all([fetch("/metrics"),fetch("/v1/models")]);let met=parseMetrics(await mr.text()),mi={};try{let md=await mod.json();if(md.data&&md.data.length)mi=md.data[0]}catch(e){}let hs=performance.now(),ho=false;try{let hr=await fetch("/health");ho=hr.ok}catch(e){}let hl=performance.now()-hs,b=document.getElementById("statusBadge"),d=document.getElementById("statusDot"),st=document.getElementById("statusText");if(ho){b.className="badge ready";d.className="dot ready";st.textContent="Ready"}else{b.className="badge offline";d.className="dot offline";st.textContent="Offline"}let rr=met["sglang:num_running_reqs"]?.value||0,qr=met["sglang:num_queue_reqs"]?.value||0,tu=met["sglang:token_usage"]?.value||0,ci=met["sglang:cache_config_info"];document.getElementById("metLatency").textContent=hl.toFixed(0)+" ms";document.getElementById("metRunning").textContent=rr;document.getElementById("metQueue").textContent=qr;document.getElementById("metCache").textContent=(tu*100).toFixed(1)+"%";document.getElementById("metGpu").textContent="~4.0 / 24.0 GB";let us=(Date.now()-startTime)/1000,h=Math.floor(us/3600),m=Math.floor((us%3600)/60),s=Math.floor(us%60);document.getElementById("metUptime").textContent=h>0?h+"h "+m+"m":m+"m "+s+"s";if(mi.id){document.getElementById("mName").textContent=mi.id;document.getElementById("mCtx").textContent=(mi.max_model_len||8192).toLocaleString()+" tokens"}if(ci)document.getElementById("mPages").textContent=ci.labels.num_pages+" x "+ci.labels.page_size;document.getElementById("lastRefresh").textContent=new Date().toLocaleTimeString("de-DE")}catch(e){console.error(e)}}
+    refresh();setInterval(refresh,3000);
+    </script>
     </body>
     </html>
-
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: reranker
+  namespace: {{ .Release.Namespace }}
   labels:
     app: reranker
     applications.app.bytetrade.io/name: reranker
-    applications.app.bytetrade.io/owner: '{{ .Release.Namespace | trimSuffix "-aimighty" }}'
-    io.kompose.service: reranker
-  name: reranker
-  namespace: '{{ .Release.Namespace }}'
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
       app: reranker
-  strategy: {}
+  strategy:
+    type: {{ .Values.strategy.type }}
   template:
     metadata:
-      annotations:
-        applications.app.bytetrade.io/studio-expose-ports: ""
       labels:
         app: reranker
         applications.app.bytetrade.io/name: reranker
-        applications.app.bytetrade.io/owner: '{{ .Release.Namespace | trimSuffix "-aimighty" }}'
+        applications.app.bytetrade.io/owner: {{ .Release.Namespace | trimSuffix "-aimighty" }}
         applications.app.bytetrade.io/raw-app-name: reranker
         io.bytetrade.app: "true"
-        io.kompose.network/chrome-default: "true"
-        io.kompose.service: reranker
     spec:
       containers:
-
-      # ── SGLang Inference Engine ───────────────────────────────────────────
-      - name: sglang
-        image: lmsysorg/sglang:latest-cu130
+      # SGLang Inference Engine
+      - name: reranker
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-          - python3
-          - -m
-          - sglang.launch_server
+        - python3
+        - -m
+        - sglang.launch_server
         args:
-          - "--model-path"
-          - "Qwen/Qwen3-Reranker-0.6B"
-          - "--host"
-          - "0.0.0.0"
-          - "--port"
-          - "30000"
-          - "--dtype"
-          - "bfloat16"
-          # KEIN --kv-cache-dtype fp8 → silent corruption auf SM120 (RTX 5090)
-          - "--mem-fraction-static"
-          - "0.85"
-          # FlashAttention 4 für Blackwell SM120
-          - "--prefill-attention-backend"
-          - "fa4"
-          - "--chunked-prefill-size"
-          - "4096"
-          - "--max-running-requests"
-          - "64"
-          - "--disable-radix-cache"
-          # KEIN --is-embedding → zerstört yes/no-Logprob-Scoring
-          - "--trust-remote-code"
-          # Qwen3-Reranker benötigt dieses Chat-Template für korrekte Scores
-          - "--chat-template"
-          - "examples/chat_template/qwen3_reranker.jinja"
+        - --model-path
+        - {{ .Values.sgLangArgs.modelPath }}
+        - --host
+        - 0.0.0.0
+        - --port
+        - {{ .Values.apiPort | quote }}
+        - --dtype
+        - {{ .Values.sgLangArgs.dtype }}
+        - --mem-fraction-static
+        - {{ .Values.sgLangArgs.memFraction | quote }}
+        - --attention-backend
+        - {{ .Values.sgLangArgs.attentionBackend }}
+        - --max-running-requests
+        - {{ .Values.sgLangArgs.maxRunningRequests | quote }}
+        - --max-total-tokens
+        - {{ .Values.sgLangArgs.maxTotalTokens | quote }}
+        - --context-length
+        - {{ .Values.sgLangArgs.contextLength | quote }}
+        - --disable-radix-cache
+        - --disable-cuda-graph
+        - --enable-metrics
+        - --trust-remote-code
+        - --chat-template
+        - {{ .Values.sgLangArgs.chatTemplate }}
         env:
-        - name: HF_HOME
-          value: /root/.cache/huggingface
+        {{- range $key, $value := .Values.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
         ports:
-        - containerPort: 30000
+        - containerPort: {{ .Values.apiPort }}
         resources:
-          limits:
-            cpu: "8"
-            memory: 16Gi
-            nvidia.com/gpu: "1"
-          requests:
-            cpu: "2"
-            memory: 4Gi
+          {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
-        - mountPath: /root/.cache/huggingface
+        - mountPath: {{ .Values.volumes.hfCache.mountPath }}
           name: hf-cache
         - mountPath: /dev/shm
           name: dshm
-        # SGLang braucht 2–5 Min beim ersten Start (JIT + Modell-Download)
         startupProbe:
-          httpGet:
-            path: /health
-            port: 30000
-          failureThreshold: 60
-          periodSeconds: 10
+          {{- toYaml .Values.startupProbe | nindent 10 }}
         livenessProbe:
-          httpGet:
-            path: /health
-            port: 30000
-          initialDelaySeconds: 30
-          periodSeconds: 30
-          timeoutSeconds: 10
-          failureThreshold: 3
+          {{- toYaml .Values.livenessProbe | nindent 10 }}
         readinessProbe:
-          httpGet:
-            path: /health
-            port: 30000
-          initialDelaySeconds: 30
-          periodSeconds: 15
-          timeoutSeconds: 10
-          failureThreshold: 5
-
-      # ── nginx Status-UI (Browser-Entrance) ────────────────────────────────
+          {{- toYaml .Values.readinessProbe | nindent 10 }}
+      # nginx Dashboard
       - name: nginx
-        image: nginx:alpine
+        image: "{{ .Values.nginx.image }}"
         ports:
-        - containerPort: 8080
+        - containerPort: {{ .Values.dashboardPort }}
         resources:
-          limits:
-            cpu: "200m"
-            memory: 64Mi
-          requests:
-            cpu: "50m"
-            memory: 32Mi
+          {{- toYaml .Values.nginxResources | nindent 10 }}
         volumeMounts:
         - mountPath: /etc/nginx/conf.d/default.conf
           name: nginx-config
           subPath: nginx.conf
-        - mountPath: /usr/share/nginx/html/index.html
-          name: nginx-config
-          subPath: index.html
-
-      restartPolicy: Always
+        - mountPath: /usr/share/nginx/html
+          name: dashboard-html
       volumes:
       - hostPath:
-          path: '{{ .Values.userspace.appData }}/reranker/hf-cache'
+          path: "{{ .Values.userspace.appData }}/reranker/hf-cache"
           type: DirectoryOrCreate
         name: hf-cache
-      # Ersatz für --ipc=host: großes /dev/shm für PyTorch multiprocessing
       - emptyDir:
           medium: Memory
-          sizeLimit: 8Gi
+          sizeLimit: {{ .Values.volumes.dshm.sizeLimit }}
         name: dshm
       - configMap:
-          name: reranker-nginx
+          name: reranker-dashboard
+          items:
+          - key: nginx.conf
+            path: nginx.conf
         name: nginx-config
-status: {}
-
----
-# Service: Port 8080 (nginx Status-UI, Olares Entrance)
-# Port 30000 (SGLang API, cluster-intern erreichbar)
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: reranker
-    io.kompose.service: reranker
-  name: reranker
-  namespace: '{{ .Release.Namespace }}'
-spec:
-  ports:
-  - name: "8080"
-    port: 8080
-    targetPort: 8080
-  - name: "30000"
-    port: 30000
-    targetPort: 30000
-  selector:
-    app: reranker
-status:
-  loadBalancer: {}
+      - configMap:
+          name: reranker-dashboard
+        name: dashboard-html

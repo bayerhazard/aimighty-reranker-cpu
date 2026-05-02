@@ -1,88 +1,58 @@
-entrances:
-- authLevel: private
-  host: reranker
-  icon: https://app.cdn.olares.com/appstore/default/defaulticon.webp
-  name: reranker
-  openMethod: default
-  port: 8080
-  skip: false
-  title: Reranker
+olaresManifest.version: 0.11.0
+olaresManifest.type: app
 metadata:
+  name: reranker
   appid: reranker
+  title: Aimighty Reranker
+  description: Qwen3-Reranker-0.6B via SGLang on NVIDIA RTX 5090 (Blackwell). RAG-ready /v1/rerank endpoint with live monitoring dashboard.
+  icon: https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png
+  version: 0.9.0
   categories:
   - AI
-  description: Qwen3-Reranker-0.6B via SGLang on NVIDIA GPU. OpenAI-compatible /v1/rerank endpoint for RAG pipelines.
-  icon: https://app.cdn.olares.com/appstore/default/defaulticon.webp
-  name: reranker
-  target: ""
+  - Developer Tools
+entrances:
+- name: reranker
+  port: 8080
   title: Reranker
-  version: 0.1.0
-middleware:
-  Argo: null
-  Elasticsearch: null
-  MariaDB: null
-  Minio: null
-  MySQL: null
-  Nats: null
-  RabbitMQ: null
-olaresManifest.type: app
-olaresManifest.version: 0.8.0
+  host: reranker
+  authLevel: internal
+  invisible: false
+permission:
+  appData: true
+spec:
+  versionName: "0.9.0"
+  fullDescription: |
+    Aimighty Reranker deploys Qwen3-Reranker-0.6B using SGLang on NVIDIA RTX 5090 (Blackwell).
+
+    Features:
+    - /v1/rerank endpoint (Cohere/Jina-compatible)
+    - Live monitoring dashboard on port 8080
+    - FlashInfer attention backend optimized for SM120
+    - Prometheus metrics via /metrics
+    - Optimized: 4 GB GPU, 12 GB RAM
+
+    RAGFlow Integration:
+    Base URL: http://reranker.<namespace>:30000
+    Model: Qwen/Qwen3-Reranker-0.6B
+
+    Architecture:
+    - SGLang inference engine with FlashInfer backend
+    - nginx reverse proxy for dashboard
+    - bfloat16 precision, KV-cache optimized
+  developer: Aimighty
+  locale:
+  - en
+  supportArch:
+  - amd64
+  requiredCpu: 1
+  requiredMemory: 4Gi
+  requiredDisk: 10Gi
+  requiredGpu: 1
+  limitedCpu: 4
+  limitedMemory: 12Gi
 options:
-  AllowedOutboundPorts: null
-  analytics: null
-  apiTimeout: null
-  appScope: null
   dependencies:
   - name: olares
     type: system
     version: '>=1.12.2-0'
-  images: null
-  mobileSupported: false
-  oidc:
-    enabled: false
-    entranceName: ""
-    redirectUri: ""
-  policies: null
-  resetCookie: null
-  syncProvider: null
-  upload: null
-  wsConfig: null
-permission:
-  appCache: false
-  appData: true
-  provider: null
-  userData: []
-ports: null
-spec:
-  developer: "Qwen Team / SGLang Project"
-  fullDescription: |
-    Deploys Qwen3-Reranker-0.6B using SGLang (lmsysorg/sglang:latest-cu130).
-    Optimized for NVIDIA Blackwell (RTX 5090, SM120, CUDA 13.0).
-
-    Browser UI (Port 8080): Status page with live health check and API usage examples.
-    Internal API (Port 30000): OpenAI-compatible /v1/rerank endpoint.
-
-    RAGFlow: Model Providers > SGLang > Base URL: http://reranker.<namespace>:30000
-    LangChain/LlamaIndex: POST http://reranker.<namespace>:30000/v1/rerank
-
-    Security: Only load models from the official Qwen/ HuggingFace account.
-    CVE-2026-5760 affects the /v1/rerank path with malicious GGUF models.
-  limitedCpu: "8"
-  limitedMemory: 16Gi
-  podGpuConsumePolicy: ""
-  promoteImage: null
-  promoteVideo: ""
-  requiredCpu: "2"
-  requiredDisk: 10Gi
-  requiredGpu: "1"
-  requiredMemory: 4Gi
-  runAsInternal: false
-  runAsUser: false
-  subCategory: ""
-  subCharts: null
-  supportArch:
-  - amd64
-  supportClient: null
-  upgradeDescription: ""
-  versionName: 0.1.0
-tailScale: {}
+  allowMultipleInstall: false

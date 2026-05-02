@@ -1,1 +1,67 @@
----
+image:
+  repository: lmsysorg/sglang
+  tag: latest-cu130
+  pullPolicy: IfNotPresent
+nginx:
+  image: nginx:alpine
+replicaCount: 1
+revisionHistoryLimit: 1
+apiPort: 30000
+dashboardPort: 8080
+strategy:
+  type: Recreate
+resources:
+  limits:
+    cpu: '4'
+    memory: 12Gi
+    nvidia.com/gpu: '1'
+  requests:
+    cpu: '1'
+    memory: 3Gi
+nginxResources:
+  limits:
+    cpu: 200m
+    memory: 64Mi
+  requests:
+    cpu: 50m
+    memory: 32Mi
+env:
+  HF_HOME: /root/.cache/huggingface
+sgLangArgs:
+  modelPath: Qwen/Qwen3-Reranker-0.6B
+  dtype: bfloat16
+  memFraction: '0.15'
+  attentionBackend: flashinfer
+  maxRunningRequests: '4'
+  maxTotalTokens: '16384'
+  contextLength: '8192'
+  chatTemplate: examples/chat_template/qwen3_reranker.jinja
+volumes:
+  hfCache:
+    mountPath: /root/.cache/huggingface
+  dshm:
+    sizeLimit: 4Gi
+startupProbe:
+  httpGet:
+    path: /health
+    port: 30000
+  failureThreshold: 90
+  periodSeconds: 10
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 30000
+  initialDelaySeconds: 60
+  periodSeconds: 60
+  timeoutSeconds: 15
+  failureThreshold: 3
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 30000
+  initialDelaySeconds: 30
+  periodSeconds: 20
+  timeoutSeconds: 10
+  failureThreshold: 3
+service:
+  type: ClusterIP
