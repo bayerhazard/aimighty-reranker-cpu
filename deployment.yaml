@@ -17,7 +17,7 @@ data:
         }
         location /v1/ {
             proxy_pass http://localhost:30000/v1/;
-            proxy_read_timeout 120s;
+            proxy_read_timeout 600s;
         }
         location /metrics {
             proxy_pass http://localhost:30000/metrics;
