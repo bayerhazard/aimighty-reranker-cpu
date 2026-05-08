@@ -6,7 +6,7 @@ metadata:
   title: Aimighty Reranker
   description: Qwen3-Reranker-0.6B via SGLang on NVIDIA RTX 5090 (Blackwell). RAG-ready /v1/rerank endpoint with live monitoring dashboard.
   icon: https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png
-  version: 0.9.0
+  version: 1.0.0
   categories:
   - AI
   - Developer Tools
@@ -20,7 +20,7 @@ entrances:
 permission:
   appData: true
 spec:
-  versionName: "0.9.0"
+  versionName: "1.0.0"
   fullDescription: |
     Aimighty Reranker deploys Qwen3-Reranker-0.6B using SGLang on NVIDIA RTX 5090 (Blackwell).
 
