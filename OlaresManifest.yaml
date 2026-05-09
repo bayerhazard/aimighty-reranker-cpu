@@ -1,10 +1,10 @@
 olaresManifest.version: 0.11.0
 olaresManifest.type: app
 metadata:
-  name: reranker
-  appid: reranker
-  title: Aimighty Reranker
-  description: Qwen3-Reranker-0.6B via SGLang on NVIDIA RTX 5090 (Blackwell). RAG-ready /v1/rerank endpoint with live monitoring dashboard.
+  name: aimrerqwen3sglang
+  appid: aimrerqwen3sglang
+  title: AIM Qwen3 Rer 0.6B SGLang
+  description: Qwen3-Reranker-0.6B via SGLang — RAG-ready /v1/rerank endpoint with FlashInfer backend and live monitoring dashboard
   icon: https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png
   version: 1.0.0
   categories:
@@ -22,23 +22,24 @@ permission:
 spec:
   versionName: "1.0.0"
   fullDescription: |
-    Aimighty Reranker deploys Qwen3-Reranker-0.6B using SGLang on NVIDIA RTX 5090 (Blackwell).
+    Qwen3-Reranker-0.6B + SGLang on GPU, optimized for Olares One.
 
-    Features:
-    - /v1/rerank endpoint (Cohere/Jina-compatible)
-    - Live monitoring dashboard on port 8080
-    - FlashInfer attention backend optimized for SM120
-    - Prometheus metrics via /metrics
-    - Optimized: 4 GB GPU, 12 GB RAM
+    **Model**
+    Qwen/Qwen3-Reranker-0.6B — a lightweight 600M-parameter cross-encoder reranker from Qwen, optimized for re-ranking search results in Retrieval-Augmented Generation (RAG) workflows.
 
-    RAGFlow Integration:
-    Base URL: http://reranker.<namespace>:30000
-    Model: Qwen/Qwen3-Reranker-0.6B
+    **Inference Engine**
+    SGLang with FlashInfer attention backend, optimized for NVIDIA RTX 5090 (Blackwell, SM120). Runs in bfloat16 precision with KV-cache optimization for low-latency inference.
 
-    Architecture:
-    - SGLang inference engine with FlashInfer backend
-    - nginx reverse proxy for dashboard
-    - bfloat16 precision, KV-cache optimized
+    **Key Features**
+    - /v1/rerank endpoint compatible with Cohere and Jina reranking APIs
+    - Live monitoring dashboard on port 8080 with real-time request metrics
+    - Prometheus metrics exposed via /metrics for observability
+    - nginx reverse proxy for dashboard access
+
+    **Resource Usage**
+    GPU: 4 GB VRAM (NVIDIA RTX 5090 or compatible)
+    RAM: 12 GB
+    Disk: 10 GB
   developer: Aimighty
   locale:
   - en
