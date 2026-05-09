@@ -209,6 +209,26 @@ spec:
         applications.app.bytetrade.io/raw-app-name: reranker
         io.bytetrade.app: "true"
     spec:
+      initContainers:
+      - name: fix-kubelet-bypass
+        image: beclab/init:v1.2.3
+        imagePullPolicy: IfNotPresent
+        command:
+        - /bin/sh
+        - -c
+        - |
+          for cidr in {{ join " " .Values.kubeletCidrs }}; do
+            iptables -t nat -I PROXY_INBOUND 4 -s "$cidr" -j RETURN 2>/dev/null || \
+            iptables -t nat -I PROXY_INBOUND -s "$cidr" -j RETURN
+          done
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+            - NET_RAW
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
       containers:
       # SGLang Inference Engine
       - name: reranker

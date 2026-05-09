@@ -64,5 +64,7 @@ readinessProbe:
   periodSeconds: 20
   timeoutSeconds: 10
   failureThreshold: 3
+kubeletCidrs:
+  - 172.20.0.0/16
 service:
   type: ClusterIP
