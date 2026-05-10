@@ -2,7 +2,6 @@ olaresManifest.version: 0.11.0
 olaresManifest.type: app
 metadata:
   name: aimrerqwen3vllm
-  appid: aimrerqwen3vllm
   title: AIM Qwen3 Rer 0.6B vllm
   description: Qwen3-Reranker-0.6B via vllm
   icon: https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png
@@ -11,10 +10,10 @@ metadata:
   - AI
   - Developer Tools
 entrances:
-- name: reranker
+- name: aimrerqwen3vllm
   port: 8080
   title: Reranker
-  host: reranker
+  host: aimrerqwen3vllm
   authLevel: internal
   invisible: false
 permission:
@@ -45,10 +44,11 @@ spec:
   requiredCpu: 1
   requiredMemory: 4Gi
   requiredDisk: 10Gi
-  requiredGpu: 1
+  requiredGpu: 1Gi
   limitedCpu: 4
   limitedMemory: 12Gi
 options:
+  apiTimeout: 3600
   dependencies:
   - name: olares
     type: system
