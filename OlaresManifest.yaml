@@ -35,6 +35,8 @@ spec:
     GPU: 4 GB VRAM (NVIDIA RTX 5090 or compatible)
     RAM: 12 GB
     Disk: 10 GB
+  upgradeDescription:
+    v1.1.0: Switched inference engine from SGLang to vllm. Renamed app to aimrerqwen3vllm. Updated all metadata and chart to reflect vllm backend. v1.0.9: Fix PROXY_INBOUND iptables chain is now created before rules are inserted (fixes CrashLoopBackOff on restart). v1.0.8: Fix owner label value in Deployment metadata is now "aimighty" (was the app name). v1.0.7: Added owner+raw-app-name labels to Deployment metadata.
   developer: Aimighty
   locale:
   - en
