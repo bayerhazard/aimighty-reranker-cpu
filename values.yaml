@@ -1,6 +1,6 @@
 image:
-  repository: lmsysorg/sglang
-  tag: latest-cu130
+  repository: vllm/vllm-openai
+  tag: latest
   pullPolicy: IfNotPresent
 nginx:
   image: nginx:alpine
@@ -27,15 +27,15 @@ nginxResources:
     memory: 32Mi
 env:
   HF_HOME: /root/.cache/huggingface
-sgLangArgs:
-  modelPath: Qwen/Qwen3-Reranker-0.6B
+vllmArgs:
+  model: Qwen/Qwen3-Reranker-0.6B
   dtype: bfloat16
-  memFraction: '0.15'
-  attentionBackend: flashinfer
-  maxRunningRequests: '4'
-  maxTotalTokens: '16384'
-  contextLength: '8192'
-  chatTemplate: examples/chat_template/qwen3_reranker.jinja
+  gpuMemoryUtilization: '0.15'
+  maxModelLen: '8192'
+  maxNumSeqs: '4'
+  servedModelName: Qwen/Qwen3-Reranker-0.6B
+userspace:
+  appData: /olares/rootfs/userspace/pvc-userspace-aimighty-phbiddku99qy4cuz
 volumes:
   hfCache:
     mountPath: /root/.cache/huggingface

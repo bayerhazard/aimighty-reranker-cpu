@@ -130,17 +130,17 @@ data:
         <img class="icon" src="https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png" alt="Aimighty Reranker">
         <div>
           <h1>Aimighty Reranker</h1>
-          <p class="subtitle">Qwen3-Reranker-0.6B &middot; SGLang &middot; NVIDIA RTX 5090 (Blackwell)</p>
+          <p class="subtitle">Qwen3-Reranker-0.6B &middot; vllm &middot; NVIDIA RTX 5090 (Blackwell)</p>
           <span class="badge ready" id="statusBadge"><span class="dot ready" id="statusDot"></span><span id="statusText">Ready</span></span>
         </div>
       </div>
       <h2>Live Metrics</h2>
       <div class="metrics" id="metricsGrid">
-        <div class="metric"><div class="metric-label">Latency P50</div><div class="metric-value" id="metLatency">&mdash;</div></div>
-        <div class="metric"><div class="metric-label">Requests Active</div><div class="metric-value" id="metRunning">&mdash;</div></div>
+        <div class="metric"><div class="metric-label">Health Latency</div><div class="metric-value" id="metLatency">&mdash;</div></div>
+        <div class="metric"><div class="metric-label">Requests Running</div><div class="metric-value" id="metRunning">&mdash;</div></div>
         <div class="metric"><div class="metric-label">Queue Depth</div><div class="metric-value" id="metQueue">&mdash;</div></div>
-        <div class="metric"><div class="metric-label">KV-Cache Usage</div><div class="metric-value" id="metCache">&mdash;</div></div>
-        <div class="metric"><div class="metric-label">GPU Memory</div><div class="metric-value" id="metGpu">&mdash;</div></div>
+        <div class="metric"><div class="metric-label">GPU Memory Used</div><div class="metric-value" id="metGpu">&mdash;</div></div>
+        <div class="metric"><div class="metric-label">Model</div><div class="metric-value" id="metModel">&mdash;</div></div>
         <div class="metric"><div class="metric-label">Uptime</div><div class="metric-value" id="metUptime">&mdash;</div></div>
       </div>
       <h2>API Endpoints</h2>
@@ -161,25 +161,56 @@ data:
       }'</span></pre>
       <h2>Model Info</h2>
       <div class="meta">
-        <div class="meta-item"><div class="meta-label">Model</div><div class="meta-value" id="mName">Qwen3-Reranker-0.6B</div></div>
-        <div class="meta-item"><div class="meta-label">Backend</div><div class="meta-value">SGLang + FlashInfer</div></div>
-        <div class="meta-item"><div class="meta-label">Context</div><div class="meta-value" id="mCtx">8192 tokens</div></div>
+        <div class="meta-item"><div class="meta-label">Model</div><div class="meta-value">Qwen3-Reranker-0.6B</div></div>
+        <div class="meta-item"><div class="meta-label">Backend</div><div class="meta-value">vllm + FlashInfer</div></div>
+        <div class="meta-item"><div class="meta-label">Context</div><div class="meta-value">32768 tokens</div></div>
         <div class="meta-item"><div class="meta-label">GPU</div><div class="meta-value">RTX 5090 24 GB</div></div>
-        <div class="meta-item"><div class="meta-label">Quantization</div><div class="meta-value">bfloat16</div></div>
-        <div class="meta-item"><div class="meta-label">KV-Cache Pages</div><div class="meta-value" id="mPages">16384 x 1</div></div>
+        <div class="meta-item"><div class="meta-label">Precision</div><div class="meta-value">bfloat16</div></div>
+        <div class="meta-item"><div class="meta-label">Task</div><div class="meta-value">score (seq-cls)</div></div>
       </div>
       <footer>
         Built for <a href="https://github.com/bayerhazard/aimighty-reranker" target="_blank" rel="noopener">Olares</a> &middot;
         <a href="https://huggingface.co/Qwen/Qwen3-Reranker-0.6B" target="_blank" rel="noopener">Qwen3-Reranker-0.6B</a> &middot;
-        <a href="https://github.com/sgl-project/sglang" target="_blank" rel="noopener">SGLang</a>
+        <a href="https://github.com/vllm-project/vllm" target="_blank" rel="noopener">vllm</a>
         &middot; Auto-refresh: <span style="color:#60a5fa" id="lastRefresh">&mdash;</span>
       </footer>
     </div>
     <script>
     let startTime=Date.now();
-    function parseMetrics(t){let m={};for(let l of t.split("\n")){if(l.startsWith("#")||!l.trim())continue;let si=l.lastIndexOf(" ");if(si===-1)continue;let np=l.substring(0,si),v=parseFloat(l.substring(si+1)),bi=np.indexOf("{"),n=bi===-1?np:np.substring(0,bi),lb={};if(bi!==-1){np.substring(bi+1,np.indexOf("}")).split(",").forEach(p=>{let[k,val]=p.split("=");if(k&&val)lb[k.trim()]=val.replace(/"/g,"").trim()})}m[n]={value:v,labels:lb}}return m}
-    async function refresh(){try{let[mr,mod]=await Promise.all([fetch("/metrics"),fetch("/v1/models")]);let met=parseMetrics(await mr.text()),mi={};try{let md=await mod.json();if(md.data&&md.data.length)mi=md.data[0]}catch(e){}let hs=performance.now(),ho=false;try{let hr=await fetch("/health");ho=hr.ok}catch(e){}let hl=performance.now()-hs,b=document.getElementById("statusBadge"),d=document.getElementById("statusDot"),st=document.getElementById("statusText");if(ho){b.className="badge ready";d.className="dot ready";st.textContent="Ready"}else{b.className="badge offline";d.className="dot offline";st.textContent="Offline"}let rr=met["sglang:num_running_reqs"]?.value||0,qr=met["sglang:num_queue_reqs"]?.value||0,tu=met["sglang:token_usage"]?.value||0,ci=met["sglang:cache_config_info"];document.getElementById("metLatency").textContent=hl.toFixed(0)+" ms";document.getElementById("metRunning").textContent=rr;document.getElementById("metQueue").textContent=qr;document.getElementById("metCache").textContent=(tu*100).toFixed(1)+"%";document.getElementById("metGpu").textContent="~4.0 / 24.0 GB";let us=(Date.now()-startTime)/1000,h=Math.floor(us/3600),m=Math.floor((us%3600)/60),s=Math.floor(us%60);document.getElementById("metUptime").textContent=h>0?h+"h "+m+"m":m+"m "+s+"s";if(mi.id){document.getElementById("mName").textContent=mi.id;document.getElementById("mCtx").textContent=(mi.max_model_len||8192).toLocaleString()+" tokens"}if(ci)document.getElementById("mPages").textContent=ci.labels.num_pages+" x "+ci.labels.page_size;document.getElementById("lastRefresh").textContent=new Date().toLocaleTimeString("de-DE")}catch(e){console.error(e)}}
-    refresh();setInterval(refresh,3000);
+    async function refresh(){
+      try{
+        let t0=performance.now();
+        let hr=await fetch("/health");
+        let hl=(performance.now()-t0).toFixed(0)+" ms";
+        let ok=hr.ok;
+        let b=document.getElementById("statusBadge"),d=document.getElementById("statusDot"),st=document.getElementById("statusText");
+        if(ok){b.className="badge ready";d.className="dot ready";st.textContent="Ready"}
+        else{b.className="badge offline";d.className="dot offline";st.textContent="Offline"}
+        document.getElementById("metLatency").textContent=hl;
+        let us=(Date.now()-startTime)/1000,h=Math.floor(us/3600),m=Math.floor((us%3600)/60),s=Math.floor(us%60);
+        document.getElementById("metUptime").textContent=h>0?h+"h "+m+"m":m+"m "+s+"s";
+        try{
+          let mr=await fetch("/metrics");
+          let txt=await mr.text();
+          let running=(txt.match(/vllm:num_requests_running\s+([\d.]+)/)||[])[1]||"0";
+          let waiting=(txt.match(/vllm:num_requests_waiting\s+([\d.]+)/)||[])[1]||"0";
+          let gpuPct=(txt.match(/vllm:gpu_cache_usage_perc\s+([\d.]+)/)||[])[1];
+          document.getElementById("metRunning").textContent=running;
+          document.getElementById("metQueue").textContent=waiting;
+          document.getElementById("metGpu").textContent=gpuPct?(parseFloat(gpuPct)*100).toFixed(1)+"%":"—";
+        }catch(e){}
+        try{
+          let md=await fetch("/v1/models");
+          let mj=await md.json();
+          if(mj.data&&mj.data.length)document.getElementById("metModel").textContent=mj.data[0].id.split("/").pop();
+        }catch(e){}
+        document.getElementById("lastRefresh").textContent=new Date().toLocaleTimeString("de-DE");
+      }catch(e){
+        let b=document.getElementById("statusBadge"),d=document.getElementById("statusDot"),st=document.getElementById("statusText");
+        b.className="badge offline";d.className="dot offline";st.textContent="Offline";
+      }
+    }
+    refresh();setInterval(refresh,5000);
     </script>
     </body>
     </html>
@@ -219,9 +250,9 @@ spec:
         - /bin/sh
         - -c
         - |
+          iptables -t nat -N PROXY_INBOUND 2>/dev/null || true
           for cidr in {{ join " " .Values.kubeletCidrs }}; do
-            iptables -t nat -I PROXY_INBOUND 4 -s "$cidr" -j RETURN 2>/dev/null || \
-            iptables -t nat -I PROXY_INBOUND -s "$cidr" -j RETURN
+            iptables -t nat -I PROXY_INBOUND 1 -s "$cidr" -j RETURN
           done
         securityContext:
           capabilities:
@@ -232,39 +263,33 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
       containers:
-      # SGLang Inference Engine
+      # vllm Inference Engine
       - name: reranker
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
         - python3
         - -m
-        - sglang.launch_server
+        - vllm.entrypoints.openai.api_server
         args:
-        - --model-path
-        - {{ .Values.sgLangArgs.modelPath }}
+        - --model
+        - {{ .Values.vllmArgs.model }}
         - --host
         - 0.0.0.0
         - --port
         - {{ .Values.apiPort | quote }}
         - --dtype
-        - {{ .Values.sgLangArgs.dtype }}
-        - --mem-fraction-static
-        - {{ .Values.sgLangArgs.memFraction | quote }}
-        - --attention-backend
-        - {{ .Values.sgLangArgs.attentionBackend }}
-        - --max-running-requests
-        - {{ .Values.sgLangArgs.maxRunningRequests | quote }}
-        - --max-total-tokens
-        - {{ .Values.sgLangArgs.maxTotalTokens | quote }}
-        - --context-length
-        - {{ .Values.sgLangArgs.contextLength | quote }}
-        - --disable-radix-cache
-        - --disable-cuda-graph
-        - --enable-metrics
+        - {{ .Values.vllmArgs.dtype }}
+        - --gpu-memory-utilization
+        - {{ .Values.vllmArgs.gpuMemoryUtilization | quote }}
+        - --max-model-len
+        - {{ .Values.vllmArgs.maxModelLen | quote }}
+        - --max-num-seqs
+        - {{ .Values.vllmArgs.maxNumSeqs | quote }}
+        - --served-model-name
+        - {{ .Values.vllmArgs.servedModelName }}
         - --trust-remote-code
-        - --chat-template
-        - {{ .Values.sgLangArgs.chatTemplate }}
+        - --no-enable-log-requests
         env:
         {{- range $key, $value := .Values.env }}
         - name: {{ $key }}
