@@ -192,7 +192,7 @@ metadata:
   labels:
     app: reranker
     applications.app.bytetrade.io/name: reranker
-    applications.app.bytetrade.io/owner: {{ .Release.Namespace | trimSuffix "-aimighty" }}
+    applications.app.bytetrade.io/owner: aimighty
     applications.app.bytetrade.io/raw-app-name: reranker
 spec:
   replicas: {{ .Values.replicaCount }}
