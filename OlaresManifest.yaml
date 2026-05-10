@@ -6,7 +6,7 @@ metadata:
   title: AIM Qwen3 Rer 0.6B SGLang
   description: Qwen3-Reranker-0.6B via SGLang — RAG-ready /v1/rerank endpoint with FlashInfer backend and live monitoring dashboard
   icon: https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png
-  version: 1.0.5
+  version: 1.0.6
   categories:
   - AI
   - Developer Tools
@@ -20,7 +20,7 @@ entrances:
 permission:
   appData: true
 spec:
-  versionName: "1.0.5"
+  versionName: "1.0.6"
   fullDescription: |
     Qwen3-Reranker-0.6B + SGLang on GPU, optimized for Olares One.
 
