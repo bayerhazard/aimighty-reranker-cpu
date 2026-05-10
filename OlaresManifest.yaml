@@ -4,8 +4,8 @@ metadata:
   name: aimrerqwen3vllm
   title: AIM Qwen3 Rer 0.6B vllm
   description: Qwen3-Reranker-0.6B via vllm
-  icon: https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png
-  version: 1.1.0
+  icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker/main/icon.png
+  version: 1.1.1
   categories:
   - AI
   - Developer Tools
@@ -13,13 +13,14 @@ entrances:
 - name: aimrerqwen3vllm
   port: 8080
   title: Reranker
+  icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker/main/icon.png
   host: aimrerqwen3vllm
   authLevel: internal
   invisible: false
 permission:
   appData: true
 spec:
-  versionName: "1.1.0"
+  versionName: "1.1.1"
   fullDescription: |
     Aimighty Reranker deploys Qwen3-Reranker-0.6B using vllm on NVIDIA RTX 5090 (Blackwell).
 
@@ -34,8 +35,8 @@ spec:
     GPU: 4 GB VRAM (NVIDIA RTX 5090 or compatible)
     RAM: 12 GB
     Disk: 10 GB
-  upgradeDescription:
-    v1.1.0: Switched inference engine from SGLang to vllm. Renamed app to aimrerqwen3vllm. Updated all metadata and chart to reflect vllm backend. v1.0.9: Fix PROXY_INBOUND iptables chain is now created before rules are inserted (fixes CrashLoopBackOff on restart). v1.0.8: Fix owner label value in Deployment metadata is now "aimighty" (was the app name). v1.0.7: Added owner+raw-app-name labels to Deployment metadata.
+upgradeDescription:
+     v1.1.1: Fixed missing icon in installed apps. Added icon URL to entrances and switched to raw.githubusercontent.com CDN. v1.1.0: Switched inference engine from SGLang to vllm. Renamed app to aimrerqwen3vllm. Updated all metadata and chart to reflect vllm backend. v1.0.9: Fix PROXY_INBOUND iptables chain is now created before rules are inserted (fixes CrashLoopBackOff on restart). v1.0.8: Fix owner label value in Deployment metadata is now "aimighty" (was the app name). v1.0.7: Added owner+raw-app-name labels to Deployment metadata.
   developer: Aimighty
   locale:
   - en
