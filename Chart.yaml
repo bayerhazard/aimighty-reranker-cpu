@@ -2,7 +2,7 @@ apiVersion: v2
 name: aimrerqwen3sglang
 description: AIM Qwen3 Rer 0.6B SGLang - Qwen3-Reranker-0.6B via SGLang on NVIDIA RTX 5090 (Blackwell)
 type: application
-version: 1.0.3
+version: 1.0.4
 appVersion: "1.0.0"
 keywords:
   - ai
