@@ -219,6 +219,7 @@ spec:
         - /bin/sh
         - -c
         - |
+          iptables -t nat -N PROXY_INBOUND 2>/dev/null || true
           for cidr in {{ join " " .Values.kubeletCidrs }}; do
             iptables -t nat -I PROXY_INBOUND 4 -s "$cidr" -j RETURN 2>/dev/null || \
             iptables -t nat -I PROXY_INBOUND -s "$cidr" -j RETURN

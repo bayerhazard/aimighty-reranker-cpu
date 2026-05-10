@@ -6,7 +6,7 @@ metadata:
   title: AIM Qwen3 Rer 0.6B SGLang
   description: Qwen3-Reranker-0.6B via SGLang — RAG-ready /v1/rerank endpoint with FlashInfer backend and live monitoring dashboard
   icon: https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png
-  version: 1.0.8
+  version: 1.0.9
   categories:
   - AI
   - Developer Tools
@@ -20,7 +20,7 @@ entrances:
 permission:
   appData: true
 spec:
-  versionName: "1.0.8"
+  versionName: "1.0.9"
   fullDescription: |
     Qwen3-Reranker-0.6B + SGLang on GPU, optimized for Olares One.
 
@@ -40,6 +40,8 @@ spec:
     GPU: 4 GB VRAM (NVIDIA RTX 5090 or compatible)
     RAM: 12 GB
     Disk: 10 GB
+  upgradeDescription:
+    v1.0.9: Fix PROXY_INBOUND iptables chain is now created before rules are inserted (fixes CrashLoopBackOff on restart). v1.0.8: Fix owner label value in Deployment metadata is now "aimighty" (was the app name). v1.0.7: Added owner+raw-app-name labels to Deployment metadata.
   developer: Aimighty
   locale:
   - en
