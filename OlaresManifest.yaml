@@ -42,12 +42,6 @@ upgradeDescription:
   - en
   supportArch:
   - amd64
-  requiredCpu: 1
-  requiredMemory: 4Gi
-  requiredDisk: 10Gi
-  requiredGpu: 1
-  limitedCpu: 4
-  limitedMemory: 12Gi
 options:
   apiTimeout: 3600
   dependencies:
