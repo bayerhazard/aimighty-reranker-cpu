@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: reranker-dashboard
+  name: aimrerqwen3vllm-dashboard
   namespace: {{ .Release.Namespace }}
 data:
   nginx.conf: |
@@ -151,7 +151,7 @@ data:
         <div class="endpoint"><span class="method GET">GET</span><span class="path">/metrics</span><span class="desc">Prometheus metrics</span></div>
       </div>
       <h2>Quick Start</h2>
-      <pre><span class="kw">curl</span> -X POST <span class="str">"http://reranker:30000/v1/rerank"</span> \
+      <pre><span class="kw">curl</span> -X POST <span class="str">"http://aimrerqwen3vllm:30000/v1/rerank"</span> \
       -H <span class="str">"Content-Type: application/json"</span> \
       -d <span class="str">'{
         "model": "Qwen/Qwen3-Reranker-0.6B",
@@ -218,28 +218,28 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: reranker
+  name: aimrerqwen3vllm
   namespace: {{ .Release.Namespace }}
   labels:
-    app: reranker
-    applications.app.bytetrade.io/name: reranker
+    app: aimrerqwen3vllm
+    applications.app.bytetrade.io/name: aimrerqwen3vllm
     applications.app.bytetrade.io/owner: aimighty
-    applications.app.bytetrade.io/raw-app-name: reranker
+    applications.app.bytetrade.io/raw-app-name: aimrerqwen3vllm
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
-      app: reranker
+      app: aimrerqwen3vllm
   strategy:
     type: {{ .Values.strategy.type }}
   template:
     metadata:
       labels:
-        app: reranker
-        applications.app.bytetrade.io/name: reranker
+        app: aimrerqwen3vllm
+        applications.app.bytetrade.io/name: aimrerqwen3vllm
         applications.app.bytetrade.io/owner: {{ .Release.Namespace | trimSuffix "-aimighty" }}
-        applications.app.bytetrade.io/raw-app-name: reranker
+        applications.app.bytetrade.io/raw-app-name: aimrerqwen3vllm
         io.bytetrade.app: "true"
     spec:
       initContainers:
@@ -264,7 +264,7 @@ spec:
         terminationMessagePolicy: File
       containers:
       # vllm Inference Engine
-      - name: reranker
+      - name: aimrerqwen3vllm
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
@@ -325,7 +325,7 @@ spec:
           name: dashboard-html
       volumes:
       - hostPath:
-          path: "{{ .Values.userspace.appData }}/reranker/hf-cache"
+          path: "{{ .Values.userspace.appData }}/aimrerqwen3vllm/hf-cache"
           type: DirectoryOrCreate
         name: hf-cache
       - emptyDir:
@@ -333,11 +333,11 @@ spec:
           sizeLimit: {{ .Values.volumes.dshm.sizeLimit }}
         name: dshm
       - configMap:
-          name: reranker-dashboard
+          name: aimrerqwen3vllm-dashboard
           items:
           - key: nginx.conf
             path: nginx.conf
         name: nginx-config
       - configMap:
-          name: reranker-dashboard
+          name: aimrerqwen3vllm-dashboard
         name: dashboard-html

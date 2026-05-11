@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: reranker
+  name: aimrerqwen3vllm
   namespace: {{ .Release.Namespace }}
   labels:
-    app: reranker
+    app: aimrerqwen3vllm
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -17,4 +17,4 @@ spec:
     targetPort: {{ .Values.apiPort }}
     protocol: TCP
   selector:
-    app: reranker
+    app: aimrerqwen3vllm

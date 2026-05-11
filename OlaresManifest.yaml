@@ -7,7 +7,7 @@ metadata:
   icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker/main/icon.png
   description: Qwen3-Reranker-0.6B via vllm
   title: AIM Qwen3 Rer 0.6B vllm
-  version: '1.1.3'
+  version: '1.1.4'
   categories:
     - AI
 entrances:
@@ -19,8 +19,9 @@ entrances:
     openMethod: window
     authLevel: internal
 spec:
-  versionName: '1.1.3'
+  versionName: '1.1.4'
   upgradeDescription: |
+    v1.1.4: Fixed K8s resource naming. All deployments, services, and labels now use app name "aimrerqwen3vllm" instead of "reranker" for proper Olares integration.
     v1.1.3: Fixed OlaresManifest structure to match Olares spec v0.10.0. Moved resource fields to spec section. Fixed manifest version compatibility.
     v1.1.1: Fixed missing icon in installed apps. Added icon URL to entrances and switched to raw.githubusercontent.com CDN.
     v1.1.0: Switched inference engine from SGLang to vllm. Renamed app to aimrerqwen3vllm. Updated all metadata and chart to reflect vllm backend.
