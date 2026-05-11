@@ -28,7 +28,7 @@ nginxResources:
 env:
   HF_HOME: /root/.cache/huggingface
 vllmArgs:
-  model: Qwen/Qwen3-Reranker-0.6B
+  model: tomaarsen/Qwen3-Reranker-0.6B-seq-cls
   dtype: bfloat16
   gpuMemoryUtilization: '0.15'
   maxModelLen: '8192'

@@ -290,6 +290,8 @@ spec:
         - {{ .Values.vllmArgs.servedModelName }}
         - --trust-remote-code
         - --no-enable-log-requests
+        - --task
+        - score
         env:
         {{- range $key, $value := .Values.env }}
         - name: {{ $key }}
