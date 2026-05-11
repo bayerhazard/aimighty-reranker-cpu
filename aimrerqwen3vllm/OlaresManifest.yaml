@@ -7,7 +7,7 @@ metadata:
   icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker/main/icon.png
   description: Qwen3-Reranker-0.6B via vllm
   title: AIM Qwen3 Rer 0.6B vllm
-  version: '1.1.6'
+  version: '1.1.7'
   categories:
     - AI
 entrances:
@@ -19,8 +19,9 @@ entrances:
     openMethod: window
     authLevel: internal
 spec:
-  versionName: '1.1.6'
+  versionName: '1.1.7'
   upgradeDescription: |
+    v1.1.7: Switched vllm image from pinned v0.10.0 back to latest for best RTX 5090 Mobile (Blackwell/SM120) compatibility. vLLM official images now include upstream Blackwell support.
     v1.1.6: Bumped all versions to 1.1.6 for Olares consistency. Pinned vllm image to v0.10.0. Extracted dashboard ConfigMap from deployment.yaml for cleaner Helm chart.
     v1.1.5: Restructured Helm chart into aimrerqwen3vllm/ subdirectory. Set livenessProbe initialDelay to 1200s for reliable startup.
     v1.1.4: Fixed K8s resource naming. All deployments, services, and labels now use app name "aimrerqwen3vllm" instead of "reranker" for proper Olares integration.
