@@ -1,0 +1,69 @@
+---
+olaresManifest.version: '0.10.0'
+olaresManifest.type: app
+apiVersion: 'v2'
+metadata:
+  name: aimrerqwen3vllm
+  icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker/main/icon.png
+  description: Qwen3-Reranker-0.6B via vllm
+  title: AIM Qwen3 Rer 0.6B vllm
+  version: '1.1.5'
+  categories:
+    - AI
+entrances:
+  - name: aimrerqwen3vllm
+    port: 8080
+    host: aimrerqwen3vllm
+    title: Reranker
+    icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker/main/icon.png
+    openMethod: window
+    authLevel: internal
+spec:
+  versionName: '1.1.5'
+  upgradeDescription: |
+    v1.1.5: Restructured Helm chart into aimrerqwen3vllm/ subdirectory. Set livenessProbe initialDelay to 1200s for reliable startup.
+    v1.1.4: Fixed K8s resource naming. All deployments, services, and labels now use app name "aimrerqwen3vllm" instead of "reranker" for proper Olares integration.
+    v1.1.3: Fixed OlaresManifest structure to match Olares spec v0.10.0. Moved resource fields to spec section. Fixed manifest version compatibility.
+    v1.1.1: Fixed missing icon in installed apps. Added icon URL to entrances and switched to raw.githubusercontent.com CDN.
+    v1.1.0: Switched inference engine from SGLang to vllm. Renamed app to aimrerqwen3vllm. Updated all metadata and chart to reflect vllm backend.
+    v1.0.9: Fix PROXY_INBOUND iptables chain is now created before rules are inserted (fixes CrashLoopBackOff on restart).
+    v1.0.8: Fix owner label value in Deployment metadata is now "aimighty" (was the app name).
+    v1.0.7: Added owner+raw-app-name labels to Deployment metadata.
+  fullDescription: |
+    Aimighty Reranker deploys Qwen3-Reranker-0.6B using vllm on NVIDIA RTX 5090 (Blackwell).
+
+    **Features**
+    - /v1/rerank endpoint (OpenAI-compatible)
+    - Live monitoring dashboard on port 8080
+    - FlashInfer attention backend optimized for SM120
+    - Prometheus metrics via /metrics
+    - Optimized: 4 GB GPU, 12 GB RAM
+
+    **Resource Usage**
+    GPU: 4 GB VRAM (NVIDIA RTX 5090 or compatible)
+    RAM: 12 GB
+    Disk: 10 GB
+
+  developer: Aimighty
+  website: https://github.com/bayerhazard/aimighty-reranker
+  sourceCode: https://github.com/bayerhazard/aimighty-reranker
+  locale:
+    - en-US
+  supportArch:
+    - amd64
+  limitedCpu: 4
+  requiredCpu: 1
+  requiredMemory: 4Gi
+  limitedMemory: 12Gi
+  requiredDisk: 10Gi
+  requiredGpu: 1Gi
+  limitedGpu: 24Gi
+permission:
+  appData: true
+options:
+  apiTimeout: 3600
+  dependencies:
+    - name: olares
+      version: '>=1.12.2-0'
+      type: system
+  allowMultipleInstall: false

@@ -1,0 +1,70 @@
+image:
+  repository: vllm/vllm-openai
+  tag: latest
+  pullPolicy: IfNotPresent
+nginx:
+  image: nginx:alpine
+replicaCount: 1
+revisionHistoryLimit: 1
+apiPort: 30000
+dashboardPort: 8080
+strategy:
+  type: Recreate
+resources:
+  limits:
+    cpu: '4'
+    memory: 12Gi
+    nvidia.com/gpu: '1'
+  requests:
+    cpu: '1'
+    memory: 3Gi
+nginxResources:
+  limits:
+    cpu: 200m
+    memory: 64Mi
+  requests:
+    cpu: 50m
+    memory: 32Mi
+env:
+  HF_HOME: /root/.cache/huggingface
+vllmArgs:
+  model: Qwen/Qwen3-Reranker-0.6B
+  dtype: bfloat16
+  gpuMemoryUtilization: '0.15'
+  maxModelLen: '8192'
+  maxNumSeqs: '4'
+  servedModelName: Qwen/Qwen3-Reranker-0.6B
+userspace:
+  appData: /olares/rootfs/userspace/pvc-userspace-aimighty-phbiddku99qy4cuz
+volumes:
+  hfCache:
+    mountPath: /root/.cache/huggingface
+  dshm:
+    sizeLimit: 4Gi
+startupProbe:
+  httpGet:
+    path: /health
+    port: 30000
+  failureThreshold: 90
+  periodSeconds: 10
+  timeoutSeconds: 30
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 30000
+  initialDelaySeconds: 1200
+  periodSeconds: 60
+  timeoutSeconds: 15
+  failureThreshold: 3
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 30000
+  initialDelaySeconds: 30
+  periodSeconds: 20
+  timeoutSeconds: 10
+  failureThreshold: 3
+kubeletCidrs:
+  - 172.20.0.0/16
+service:
+  type: ClusterIP
