@@ -25,6 +25,17 @@ nginxResources:
   requests:
     cpu: 50m
     memory: 32Mi
+proxy:
+  image: python:3.12-slim
+  imagePullPolicy: IfNotPresent
+  port: 30001
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
 env:
   HF_HOME: /root/.cache/huggingface
 vllmArgs:

@@ -12,6 +12,10 @@ spec:
     port: {{ .Values.dashboardPort }}
     targetPort: {{ .Values.dashboardPort }}
     protocol: TCP
+  - name: proxy
+    port: {{ .Values.proxy.port }}
+    targetPort: {{ .Values.proxy.port }}
+    protocol: TCP
   - name: api
     port: {{ .Values.apiPort }}
     targetPort: {{ .Values.apiPort }}
