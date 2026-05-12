@@ -7,7 +7,7 @@ metadata:
   icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker/main/icon.png
   description: Qwen3-Reranker-0.6B via vllm
   title: AIM Qwen3 Rer 0.6B vllm
-  version: '1.1.9'
+  version: '1.2.0'
   categories:
     - AI
 entrances:
@@ -19,8 +19,9 @@ entrances:
     openMethod: window
     authLevel: internal
 spec:
-  versionName: '1.1.9'
+  versionName: '1.2.0'
   upgradeDescription: |
+    v1.2.0: Stable production release. All features tested and verified.
     v1.1.9: Added rerank-proxy container (Python aiohttp) that translates Cohere/Jina /v1/rerank API to vLLM /classify API. Extracted ConfigMaps from inline deployment.yaml into separate template files (proxy-configmap.yaml, dashboard-configmap.yaml). Dashboard now routes through proxy port 30001 instead of directly to vLLM.
     v1.1.8: Switched to tomaarsen/Qwen3-Reranker-0.6B-seq-cls sequence classification model. Added --task score for native vLLM /v1/rerank endpoint (Cohere/Jina-compatible). Removed need for rerank proxy.
     v1.1.7: Switched vllm image from pinned v0.10.0 back to latest for best RTX 5090 Mobile (Blackwell/SM120) compatibility. vLLM official images now include upstream Blackwell support.
