@@ -12,10 +12,6 @@ spec:
     port: {{ .Values.dashboardPort }}
     targetPort: {{ .Values.dashboardPort }}
     protocol: TCP
-  - name: proxy
-    port: 30001
-    targetPort: 30001
-    protocol: TCP
   - name: api
     port: {{ .Values.apiPort }}
     targetPort: {{ .Values.apiPort }}

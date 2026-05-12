@@ -13,28 +13,17 @@ data:
             try_files $uri $uri/ /index.html;
         }
         location /health {
-            proxy_pass http://localhost:30001/health;
+            proxy_pass http://localhost:30000/health;
         }
-        location /v1/rerank {
-            proxy_pass http://localhost:30001/v1/rerank;
+        location /v1/ {
+            proxy_pass http://localhost:30000/v1/;
             proxy_read_timeout 600s;
-        }
-        location /rerank {
-            proxy_pass http://localhost:30001/rerank;
-            proxy_read_timeout 600s;
-        }
-        location /v2/rerank {
-            proxy_pass http://localhost:30001/v2/rerank;
-            proxy_read_timeout 600s;
-        }
-        location /v1/models {
-            proxy_pass http://localhost:30001/v1/models;
-        }
-        location /get_model_info {
-            proxy_pass http://localhost:30001/get_model_info;
         }
         location /metrics {
             proxy_pass http://localhost:30000/metrics;
+        }
+        location /get_model_info {
+            proxy_pass http://localhost:30000/get_model_info;
         }
     }
   index.html: |
@@ -321,34 +310,6 @@ spec:
           {{- toYaml .Values.livenessProbe | nindent 10 }}
         readinessProbe:
           {{- toYaml .Values.readinessProbe | nindent 10 }}
-      # Rerank Proxy (formats requests for Cross-Encoder)
-      - name: rerank-proxy
-        image: python:3.12-slim
-        imagePullPolicy: IfNotPresent
-        command:
-        - sh
-        - -c
-        - pip install --quiet aiohttp && python3 /app/rerank_proxy.py
-        ports:
-        - containerPort: 30001
-        resources:
-          limits:
-            cpu: 500m
-            memory: 256Mi
-          requests:
-            cpu: 100m
-            memory: 128Mi
-        volumeMounts:
-        - mountPath: /app/rerank_proxy.py
-          name: proxy-config
-          subPath: rerank_proxy.py
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 30001
-          initialDelaySeconds: 15
-          periodSeconds: 5
-          failureThreshold: 6
       # nginx Dashboard
       - name: nginx
         image: "{{ .Values.nginx.image }}"
@@ -380,6 +341,3 @@ spec:
       - configMap:
           name: aimrerqwen3vllm-dashboard
         name: dashboard-html
-      - configMap:
-          name: aimrerqwen3vllm-proxy
-        name: proxy-config
