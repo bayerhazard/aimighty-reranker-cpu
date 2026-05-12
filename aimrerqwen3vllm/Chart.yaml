@@ -2,8 +2,8 @@ apiVersion: v2
 name: aimrerqwen3vllm
 description: AIM Qwen3 Rer 0.6B vllm - Qwen3-Reranker-0.6B via vllm on NVIDIA RTX 5090 (Blackwell)
 type: application
-version: 1.2.1
-appVersion: "1.2.1"
+version: 1.2.2
+appVersion: "1.2.2"
 keywords:
   - ai
   - reranker

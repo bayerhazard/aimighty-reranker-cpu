@@ -7,7 +7,7 @@ metadata:
   icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker/main/icon.png
   description: Qwen3-Reranker-0.6B via vllm
   title: AIM Qwen3 Rer 0.6B vllm
-  version: '1.2.1'
+  version: '1.2.2'
   categories:
     - AI
 entrances:
@@ -19,7 +19,7 @@ entrances:
     openMethod: window
     authLevel: internal
 spec:
-  versionName: '1.2.1'
+  versionName: '1.2.2'
   upgradeDescription: |
     v1.2.0: Stable production release. All features tested and verified.
     v1.1.9: Added rerank-proxy container (Python aiohttp) that translates Cohere/Jina /v1/rerank API to vLLM /classify API. Extracted ConfigMaps from inline deployment.yaml into separate template files (proxy-configmap.yaml, dashboard-configmap.yaml). Dashboard now routes through proxy port 30001 instead of directly to vLLM.
