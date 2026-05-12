@@ -6,24 +6,35 @@ metadata:
 data:
   nginx.conf: |
     server {
-        listen 8080;
+        listen {{ .Values.dashboardPort }};
         root /usr/share/nginx/html;
         index index.html;
         location / {
             try_files $uri $uri/ /index.html;
         }
         location /health {
-            proxy_pass http://localhost:30000/health;
+            proxy_pass http://localhost:{{ .Values.proxy.port }}/health;
         }
-        location /v1/ {
-            proxy_pass http://localhost:30000/v1/;
+        location /v1/rerank {
+            proxy_pass http://localhost:{{ .Values.proxy.port }}/v1/rerank;
             proxy_read_timeout 600s;
         }
-        location /metrics {
-            proxy_pass http://localhost:30000/metrics;
+        location /rerank {
+            proxy_pass http://localhost:{{ .Values.proxy.port }}/rerank;
+            proxy_read_timeout 600s;
+        }
+        location /v2/rerank {
+            proxy_pass http://localhost:{{ .Values.proxy.port }}/v2/rerank;
+            proxy_read_timeout 600s;
+        }
+        location /v1/models {
+            proxy_pass http://localhost:{{ .Values.proxy.port }}/v1/models;
         }
         location /get_model_info {
-            proxy_pass http://localhost:30000/get_model_info;
+            proxy_pass http://localhost:{{ .Values.proxy.port }}/get_model_info;
+        }
+        location /metrics {
+            proxy_pass http://localhost:{{ .Values.apiPort }}/metrics;
         }
     }
   index.html: |
@@ -310,6 +321,31 @@ spec:
           {{- toYaml .Values.livenessProbe | nindent 10 }}
         readinessProbe:
           {{- toYaml .Values.readinessProbe | nindent 10 }}
+      # Rerank Proxy (Cohere/Jina → vLLM /classify)
+      - name: rerank-proxy
+        image: "{{ .Values.proxy.image }}"
+        imagePullPolicy: {{ .Values.proxy.imagePullPolicy }}
+        command:
+          - sh
+          - -c
+          - |
+            pip install --quiet aiohttp && python3 /app/rerank_proxy.py
+        ports:
+          - containerPort: {{ .Values.proxy.port }}
+            protocol: TCP
+        resources:
+          {{- toYaml .Values.proxy.resources | nindent 10 }}
+        volumeMounts:
+          - name: proxy-config
+            mountPath: /app/rerank_proxy.py
+            subPath: rerank_proxy.py
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.proxy.port }}
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          failureThreshold: 6
       # nginx Dashboard
       - name: nginx
         image: "{{ .Values.nginx.image }}"
@@ -332,6 +368,9 @@ spec:
           medium: Memory
           sizeLimit: {{ .Values.volumes.dshm.sizeLimit }}
         name: dshm
+      - configMap:
+          name: aimrerqwen3vllm-proxy
+        name: proxy-config
       - configMap:
           name: aimrerqwen3vllm-dashboard
           items:
