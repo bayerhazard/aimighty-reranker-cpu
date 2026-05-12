@@ -111,9 +111,9 @@ data:
         <div class="endpoint"><span class="method GET">GET</span><span class="path">/metrics</span><span class="desc">Prometheus metrics</span></div>
       </div>
       <h2>Quick Start</h2>
-      <pre><span class="kw">curl</span> -X POST <span class="str">"http://aimrerqwen3vllm:{{ .Values.dashboardPort }}/v1/rerank"</span>
-  <span class="str">-H "Content-Type: application/json"</span>
-  <span class="str">-d '{"model":"{{ .Values.vllmArgs.servedModelName }}","query":"test","documents":["doc1","doc2"]}'</span></pre>
+      <pre><span class="kw">curl</span> -X POST <span class="str">"http://aimrerqwen3vllm:{{ .Values.dashboardPort }}/v1/rerank"</span> \
+      <span class="str">-H "Content-Type: application/json"</span> \
+      <span class="str">-d '{"model":"{{ .Values.vllmArgs.servedModelName }}","query":"test","documents":["doc1","doc2"]}'</span></pre>
       <h2>Model Info</h2>
       <div class="meta">
         <div class="meta-item"><div class="meta-label">Model</div><div class="meta-value">Qwen3-Reranker-0.6B</div></div>
