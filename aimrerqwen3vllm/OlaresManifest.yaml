@@ -7,7 +7,7 @@ metadata:
   icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker/main/icon.png
   description: Qwen3-Reranker-0.6B via vllm
   title: AIM Qwen3 Rer 0.6B vllm
-  version: '1.3.0'
+  version: '1.3.5'
   categories:
     - AI
 entrances:
@@ -19,8 +19,9 @@ entrances:
     openMethod: window
     authLevel: internal
 spec:
-  versionName: '1.3.0'
+  versionName: '1.3.5'
   upgradeDescription: |
+    v1.3.5: Tailored Blackwell SM120 GPU optimization (FlashInfer attention + FP8 KV-cache).
     v1.2.5: Added proxy port 30001 to service, updated rerank proxy with aiohttp (Cohere/Jina→/classify), fixed YAML parsing in dashboard-configmap.
     v1.2.2: Removed --task score arg (not supported by vllm api_server.py entrypoint). Fixed YAML indentation in dashboard-configmap.yaml.
     v1.2.0: Stable production release. All features tested and verified.

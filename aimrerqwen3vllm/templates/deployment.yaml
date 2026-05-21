@@ -301,6 +301,10 @@ spec:
         - {{ .Values.vllmArgs.servedModelName }}
         - --trust-remote-code
         - --no-enable-log-requests
+        - --attention-backend
+        - flashinfer
+        - --kv-cache-dtype
+        - fp8
         env:
         {{- range $key, $value := .Values.env }}
         - name: {{ $key }}
