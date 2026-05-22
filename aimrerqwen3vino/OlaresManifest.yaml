@@ -8,7 +8,7 @@ metadata:
   description: Qwen3-Reranker-0.6B INT8 via OpenVINO
   appid: aimrerqwen3vino
   title: Qwen3 Reranker 0.6B CPU
-  version: '1.5.1'
+  version: '0.1.0'
   categories:
     - AI
 entrances:
@@ -20,9 +20,9 @@ entrances:
     openMethod: window
     authLevel: internal
 spec:
-  versionName: "1.5.1"
+  versionName: "0.1.0"
   upgradeDescription: |
-    v1.5.1: Initial release of OpenVINO CPU-based Qwen3-Reranker-0.6B. Completely offloaded from GPU to Intel Core Ultra 9 275HX.
+    v0.1.0: Initial release of OpenVINO CPU-based Qwen3-Reranker-0.6B. Completely offloaded from GPU to Intel Core Ultra 9 275HX.
   fullDescription: |
     Qwen3-Reranker-0.6B + OpenVINO on CPU, optimized for Olares One.
 
