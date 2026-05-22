@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: aimrerqwen3vllm-dashboard
+  name: aimrerqwen3vino-dashboard
   namespace: {{ .Release.Namespace }}
 data:
   nginx.conf: |
@@ -13,28 +13,25 @@ data:
             try_files $uri $uri/ /index.html;
         }
         location /health {
-            proxy_pass http://localhost:{{ .Values.proxy.port }}/health;
+            proxy_pass http://localhost:{{ .Values.apiPort }}/health;
         }
         location /v1/rerank {
-            proxy_pass http://localhost:{{ .Values.proxy.port }}/v1/rerank;
+            proxy_pass http://localhost:{{ .Values.apiPort }}/v1/rerank;
             proxy_read_timeout 600s;
         }
         location /rerank {
-            proxy_pass http://localhost:{{ .Values.proxy.port }}/rerank;
+            proxy_pass http://localhost:{{ .Values.apiPort }}/rerank;
             proxy_read_timeout 600s;
         }
         location /v2/rerank {
-            proxy_pass http://localhost:{{ .Values.proxy.port }}/v2/rerank;
+            proxy_pass http://localhost:{{ .Values.apiPort }}/v2/rerank;
             proxy_read_timeout 600s;
         }
         location /v1/models {
-            proxy_pass http://localhost:{{ .Values.proxy.port }}/v1/models;
+            proxy_pass http://localhost:{{ .Values.apiPort }}/v1/models;
         }
         location /get_model_info {
-            proxy_pass http://localhost:{{ .Values.proxy.port }}/get_model_info;
-        }
-        location /metrics {
-            proxy_pass http://localhost:{{ .Values.apiPort }}/metrics;
+            proxy_pass http://localhost:{{ .Values.apiPort }}/get_model_info;
         }
     }
   index.html: |
@@ -43,7 +40,7 @@ data:
     <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Aimighty Reranker &mdash; Qwen3-Reranker-0.6B</title>
+    <title>Aimighty Reranker &mdash; Qwen3-Reranker-0.6B CPU</title>
     <link rel="icon" type="image/png" href="https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png">
     <style>
       *,*::before,*::after{box-sizing:border-box}
@@ -140,17 +137,14 @@ data:
       <div class="header">
         <img class="icon" src="https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png" alt="Aimighty Reranker">
         <div>
-          <h1>Aimighty Reranker</h1>
-          <p class="subtitle">Qwen3-Reranker-0.6B &middot; vllm &middot; NVIDIA RTX 5090 (Blackwell)</p>
+          <h1>Aimighty Reranker (CPU)</h1>
+          <p class="subtitle">Qwen3-Reranker-0.6B &middot; OpenVINO &middot; Intel Core Ultra 9</p>
           <span class="badge ready" id="statusBadge"><span class="dot ready" id="statusDot"></span><span id="statusText">Ready</span></span>
         </div>
       </div>
       <h2>Live Metrics</h2>
       <div class="metrics" id="metricsGrid">
         <div class="metric"><div class="metric-label">Health Latency</div><div class="metric-value" id="metLatency">&mdash;</div></div>
-        <div class="metric"><div class="metric-label">Requests Running</div><div class="metric-value" id="metRunning">&mdash;</div></div>
-        <div class="metric"><div class="metric-label">Queue Depth</div><div class="metric-value" id="metQueue">&mdash;</div></div>
-        <div class="metric"><div class="metric-label">GPU Memory Used</div><div class="metric-value" id="metGpu">&mdash;</div></div>
         <div class="metric"><div class="metric-label">Model</div><div class="metric-value" id="metModel">&mdash;</div></div>
         <div class="metric"><div class="metric-label">Uptime</div><div class="metric-value" id="metUptime">&mdash;</div></div>
       </div>
@@ -159,11 +153,10 @@ data:
         <div class="endpoint"><span class="method POST">POST</span><span class="path">/v1/rerank</span><span class="desc">Rerank documents (Cohere/Jina-compatible)</span></div>
         <div class="endpoint"><span class="method GET">GET</span><span class="path">/v1/models</span><span class="desc">List available models</span></div>
         <div class="endpoint"><span class="method GET">GET</span><span class="path">/health</span><span class="desc">Liveness probe</span></div>
-        <div class="endpoint"><span class="method GET">GET</span><span class="path">/metrics</span><span class="desc">Prometheus metrics</span></div>
       </div>
       <h2>Quick Start</h2>
-      <pre><span class="kw">curl</span> -X POST <span class="str">"http://aimrerqwen3vllm:30000/v1/rerank"</span> \
-      -H <span class="str">"Content-Type: application/json"</span> \
+      <pre><span class="kw">curl</span> -X POST <span class="str">"http://aimrerqwen3vino:8080/v1/rerank"</span> \
+      -H <span class="str">"Content-Type: application/json" \
       -d <span class="str">'{
         "model": "Qwen/Qwen3-Reranker-0.6B",
         "query": "capital of Germany",
@@ -173,16 +166,14 @@ data:
       <h2>Model Info</h2>
       <div class="meta">
         <div class="meta-item"><div class="meta-label">Model</div><div class="meta-value">Qwen3-Reranker-0.6B</div></div>
-        <div class="meta-item"><div class="meta-label">Backend</div><div class="meta-value">vllm + FlashInfer</div></div>
-        <div class="meta-item"><div class="meta-label">Context</div><div class="meta-value">32768 tokens</div></div>
-        <div class="meta-item"><div class="meta-label">GPU</div><div class="meta-value">RTX 5090 24 GB</div></div>
-        <div class="meta-item"><div class="meta-label">Precision</div><div class="meta-value">bfloat16</div></div>
-        <div class="meta-item"><div class="meta-label">Task</div><div class="meta-value">score (seq-cls)</div></div>
+        <div class="meta-item"><div class="meta-label">Backend</div><div class="meta-value">OpenVINO INT8</div></div>
+        <div class="meta-item"><div class="meta-label">Device</div><div class="meta-value">CPU</div></div>
+        <div class="meta-item"><div class="meta-label">Precision</div><div class="meta-value">INT8 PTQ</div></div>
       </div>
       <footer>
-        Built for <a href="https://github.com/bayerhazard/aimighty-reranker" target="_blank" rel="noopener">Olares</a> &middot;
-        <a href="https://huggingface.co/Qwen/Qwen3-Reranker-0.6B" target="_blank" rel="noopener">Qwen3-Reranker-0.6B</a> &middot;
-        <a href="https://github.com/vllm-project/vllm" target="_blank" rel="noopener">vllm</a>
+        Built for <a href="https://github.com/bayerhazard/aimighty-reranker-cpu" target="_blank" rel="noopener">Olares</a> &middot;
+        <a href="https://huggingface.co/tomaarsen/Qwen3-Reranker-0.6B-seq-cls" target="_blank" rel="noopener">Qwen3-Reranker-0.6B</a> &middot;
+        <a href="https://docs.openvino.ai/" target="_blank" rel="noopener">OpenVINO 2026</a>
         &middot; Auto-refresh: <span style="color:#60a5fa" id="lastRefresh">&mdash;</span>
       </footer>
     </div>
@@ -200,16 +191,6 @@ data:
         document.getElementById("metLatency").textContent=hl;
         let us=(Date.now()-startTime)/1000,h=Math.floor(us/3600),m=Math.floor((us%3600)/60),s=Math.floor(us%60);
         document.getElementById("metUptime").textContent=h>0?h+"h "+m+"m":m+"m "+s+"s";
-        try{
-          let mr=await fetch("/metrics");
-          let txt=await mr.text();
-          let running=(txt.match(/vllm:num_requests_running\s+([\d.]+)/)||[])[1]||"0";
-          let waiting=(txt.match(/vllm:num_requests_waiting\s+([\d.]+)/)||[])[1]||"0";
-          let gpuPct=(txt.match(/vllm:gpu_cache_usage_perc\s+([\d.]+)/)||[])[1];
-          document.getElementById("metRunning").textContent=running;
-          document.getElementById("metQueue").textContent=waiting;
-          document.getElementById("metGpu").textContent=gpuPct?(parseFloat(gpuPct)*100).toFixed(1)+"%":"—";
-        }catch(e){}
         try{
           let md=await fetch("/v1/models");
           let mj=await md.json();
@@ -229,28 +210,28 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aimrerqwen3vllm
+  name: aimrerqwen3vino
   namespace: {{ .Release.Namespace }}
   labels:
-    app: aimrerqwen3vllm
-    applications.app.bytetrade.io/name: aimrerqwen3vllm
+    app: aimrerqwen3vino
+    applications.app.bytetrade.io/name: aimrerqwen3vino
     applications.app.bytetrade.io/owner: aimighty
-    applications.app.bytetrade.io/raw-app-name: aimrerqwen3vllm
+    applications.app.bytetrade.io/raw-app-name: aimrerqwen3vino
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
-      app: aimrerqwen3vllm
+      app: aimrerqwen3vino
   strategy:
     type: {{ .Values.strategy.type }}
   template:
     metadata:
       labels:
-        app: aimrerqwen3vllm
-        applications.app.bytetrade.io/name: aimrerqwen3vllm
+        app: aimrerqwen3vino
+        applications.app.bytetrade.io/name: aimrerqwen3vino
         applications.app.bytetrade.io/owner: {{ .Release.Namespace | trimSuffix "-aimighty" }}
-        applications.app.bytetrade.io/raw-app-name: aimrerqwen3vllm
+        applications.app.bytetrade.io/raw-app-name: aimrerqwen3vino
         io.bytetrade.app: "true"
     spec:
       initContainers:
@@ -274,37 +255,10 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
       containers:
-      # vllm Inference Engine
-      - name: aimrerqwen3vllm
+      # OpenVINO CPU Inferenz-Server
+      - name: aimrerqwen3vino
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command:
-        - python3
-        - -m
-        - vllm.entrypoints.openai.api_server
-        args:
-        - --model
-        - {{ .Values.vllmArgs.model }}
-        - --host
-        - 0.0.0.0
-        - --port
-        - {{ .Values.apiPort | quote }}
-        - --dtype
-        - {{ .Values.vllmArgs.dtype }}
-        - --gpu-memory-utilization
-        - {{ .Values.vllmArgs.gpuMemoryUtilization | quote }}
-        - --max-model-len
-        - {{ .Values.vllmArgs.maxModelLen | quote }}
-        - --max-num-seqs
-        - {{ .Values.vllmArgs.maxNumSeqs | quote }}
-        - --served-model-name
-        - {{ .Values.vllmArgs.servedModelName }}
-        - --trust-remote-code
-        - --no-enable-log-requests
-        - --attention-backend
-        - flashinfer
-        - --kv-cache-dtype
-        - fp8
         env:
         {{- range $key, $value := .Values.env }}
         - name: {{ $key }}
@@ -325,31 +279,6 @@ spec:
           {{- toYaml .Values.livenessProbe | nindent 10 }}
         readinessProbe:
           {{- toYaml .Values.readinessProbe | nindent 10 }}
-      # Rerank Proxy (Cohere/Jina → vLLM /classify)
-      - name: rerank-proxy
-        image: "{{ .Values.proxy.image }}"
-        imagePullPolicy: {{ .Values.proxy.imagePullPolicy }}
-        command:
-          - sh
-          - -c
-          - |
-            pip install --quiet aiohttp && python3 /app/rerank_proxy.py
-        ports:
-          - containerPort: {{ .Values.proxy.port }}
-            protocol: TCP
-        resources:
-          {{- toYaml .Values.proxy.resources | nindent 10 }}
-        volumeMounts:
-          - name: proxy-config
-            mountPath: /app/rerank_proxy.py
-            subPath: rerank_proxy.py
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: {{ .Values.proxy.port }}
-          initialDelaySeconds: 15
-          periodSeconds: 5
-          failureThreshold: 6
       # nginx Dashboard
       - name: nginx
         image: "{{ .Values.nginx.image }}"
@@ -365,7 +294,7 @@ spec:
           name: dashboard-html
       volumes:
       - hostPath:
-          path: "{{ .Values.userspace.appData }}/aimrerqwen3vllm/hf-cache"
+          path: "{{ .Values.userspace.appData }}/aimrerqwen3vino/hf-cache"
           type: DirectoryOrCreate
         name: hf-cache
       - emptyDir:
@@ -373,14 +302,11 @@ spec:
           sizeLimit: {{ .Values.volumes.dshm.sizeLimit }}
         name: dshm
       - configMap:
-          name: aimrerqwen3vllm-proxy
-        name: proxy-config
-      - configMap:
-          name: aimrerqwen3vllm-dashboard
+          name: aimrerqwen3vino-dashboard
           items:
           - key: nginx.conf
             path: nginx.conf
         name: nginx-config
       - configMap:
-          name: aimrerqwen3vllm-dashboard
+          name: aimrerqwen3vino-dashboard
         name: dashboard-html

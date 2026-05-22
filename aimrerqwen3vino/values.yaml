@@ -1,12 +1,10 @@
 image:
-  repository: vllm/vllm-openai
+  repository: ghcr.io/bayerhazard/aimighty-reranker-cpu
   tag: latest
-  pullPolicy: IfNotPresent
-nginx:
-  image: nginx:alpine
+  pullPolicy: Always
 replicaCount: 1
 revisionHistoryLimit: 1
-apiPort: 30000
+apiPort: 30001
 dashboardPort: 8080
 strategy:
   type: Recreate
@@ -14,10 +12,11 @@ resources:
   limits:
     cpu: '4'
     memory: 12Gi
-    nvidia.com/gpu: '1'
   requests:
     cpu: '1'
     memory: 3Gi
+nginx:
+  image: nginx:alpine
 nginxResources:
   limits:
     cpu: 200m
@@ -25,26 +24,11 @@ nginxResources:
   requests:
     cpu: 50m
     memory: 32Mi
-proxy:
-  image: python:3.12-slim
-  imagePullPolicy: IfNotPresent
-  port: 30001
-  resources:
-    limits:
-      cpu: 500m
-      memory: 256Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
 env:
-  HF_HOME: /root/.cache/huggingface
-vllmArgs:
-  model: tomaarsen/Qwen3-Reranker-0.6B-seq-cls
-  dtype: bfloat16
-  gpuMemoryUtilization: '0.15'
-  maxModelLen: '8192'
-  maxNumSeqs: '4'
-  servedModelName: Qwen/Qwen3-Reranker-0.6B
+  MODEL_NAME: Qwen/Qwen3-Reranker-0.6B
+  OV_DEVICE: CPU
+  INFERENCE_NUM_THREADS: "8"
+  PORT: "30001"
 userspace:
   appData: /olares/rootfs/userspace/pvc-userspace-aimighty-phbiddku99qy4cuz
 volumes:
@@ -55,22 +39,22 @@ volumes:
 startupProbe:
   httpGet:
     path: /health
-    port: 30000
+    port: 30001
   failureThreshold: 90
   periodSeconds: 10
   timeoutSeconds: 30
 livenessProbe:
   httpGet:
     path: /health
-    port: 30000
-  initialDelaySeconds: 1200
+    port: 30001
+  initialDelaySeconds: 120
   periodSeconds: 60
   timeoutSeconds: 15
   failureThreshold: 3
 readinessProbe:
   httpGet:
     path: /health
-    port: 30000
+    port: 30001
   initialDelaySeconds: 30
   periodSeconds: 20
   timeoutSeconds: 10

@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: aimrerqwen3vllm
+  name: aimrerqwen3vino
   namespace: {{ .Release.Namespace }}
   labels:
-    app: aimrerqwen3vllm
+    app: aimrerqwen3vino
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,13 +12,9 @@ spec:
     port: {{ .Values.dashboardPort }}
     targetPort: {{ .Values.dashboardPort }}
     protocol: TCP
-  - name: proxy
-    port: {{ .Values.proxy.port }}
-    targetPort: {{ .Values.proxy.port }}
-    protocol: TCP
   - name: api
     port: {{ .Values.apiPort }}
     targetPort: {{ .Values.apiPort }}
     protocol: TCP
   selector:
-    app: aimrerqwen3vllm
+    app: aimrerqwen3vino

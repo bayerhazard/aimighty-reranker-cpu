@@ -1,0 +1,19 @@
+apiVersion: v2
+name: aimrerqwen3vino
+description: AIM Qwen3 Rer 0.6B OpenVINO - Qwen3-Reranker-0.6B via OpenVINO on Intel CPU
+type: application
+version: 1.5.1
+appVersion: "1.5.1"
+keywords:
+  - ai
+  - reranker
+  - openvino
+  - cpu
+  - rag
+  - intel
+home: https://github.com/bayerhazard/aimighty-reranker-cpu
+sources:
+  - https://github.com/bayerhazard/aimighty-reranker-cpu
+maintainers:
+  - name: Aimighty
+    email: admin@aimighty.local
