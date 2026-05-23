@@ -1,0 +1,208 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aimrerqwen3vino-dashboard
+  namespace: {{ .Release.Namespace }}
+data:
+  nginx.conf: |
+    server {
+        listen {{ .Values.dashboardPort }};
+        root /usr/share/nginx/html;
+        index index.html;
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
+        location /health {
+            proxy_pass http://localhost:{{ .Values.apiPort }}/health;
+        }
+        location /v1/rerank {
+            proxy_pass http://localhost:{{ .Values.apiPort }}/v1/rerank;
+            proxy_read_timeout 600s;
+        }
+        location /rerank {
+            proxy_pass http://localhost:{{ .Values.apiPort }}/rerank;
+            proxy_read_timeout 600s;
+        }
+        location /v2/rerank {
+            proxy_pass http://localhost:{{ .Values.apiPort }}/v2/rerank;
+            proxy_read_timeout 600s;
+        }
+        location /v1/models {
+            proxy_pass http://localhost:{{ .Values.apiPort }}/v1/models;
+        }
+        location /get_model_info {
+            proxy_pass http://localhost:{{ .Values.apiPort }}/get_model_info;
+        }
+    }
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Aimighty Reranker &mdash; Qwen3-Reranker-0.6B CPU</title>
+    <link rel="icon" type="image/png" href="https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png">
+    <style>
+      *,*::before,*::after{box-sizing:border-box}
+      html,body{margin:0;padding:0}
+      body{
+        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+        background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%);
+        color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+        padding:2rem 1rem;
+      }
+      .card{
+        width:100%;max-width:860px;
+        background:rgba(15,23,42,.72);
+        border:1px solid rgba(148,163,184,.15);
+        border-radius:20px;padding:2.5rem;
+        backdrop-filter:blur(20px);
+        box-shadow:0 25px 50px -12px rgba(0,0,0,.5);
+      }
+      .header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+      .icon{width:64px;height:64px;border-radius:14px;background:#fff;padding:6px;flex-shrink:0}
+      h1{margin:0;font-size:1.75rem;font-weight:700;letter-spacing:-.02em}
+      .subtitle{margin:.25rem 0 0;color:#94a3b8;font-size:.95rem}
+      .badge{
+        display:inline-flex;align-items:center;gap:.5rem;
+        margin-top:.75rem;padding:.35rem .75rem;
+        border-radius:999px;font-size:.8rem;font-weight:600;
+      }
+      .badge.ready{background:rgba(16,185,129,.12);border:1px solid #10b98155;color:#10b981}
+      .badge.offline{background:rgba(239,68,68,.12);border:1px solid #ef444455;color:#ef4444}
+      .dot{width:8px;height:8px;border-radius:50%}
+      .dot.ready{background:#10b981;box-shadow:0 0 12px #10b981}
+      .dot.offline{background:#ef4444;box-shadow:0 0 12px #ef4444}
+      h2{margin:2rem 0 .75rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#64748b}
+      .metrics{
+        display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem;
+        margin-bottom:.25rem;
+      }
+      .metric{
+        padding:.85rem 1rem;background:rgba(30,41,59,.4);
+        border:1px solid rgba(148,163,184,.1);border-radius:10px;
+      }
+      .metric-label{
+        font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;font-weight:700;
+      }
+      .metric-value{
+        margin-top:.3rem;color:#e2e8f0;font-size:1.15rem;font-weight:600;
+        font-family:"SF Mono",Monaco,Consolas,monospace;
+      }
+      .endpoints{display:grid;gap:.5rem}
+      .endpoint{
+        display:flex;align-items:center;gap:.75rem;
+        padding:.75rem 1rem;background:rgba(30,41,59,.5);
+        border:1px solid rgba(148,163,184,.1);border-radius:10px;
+        font-family:"SF Mono",Monaco,Consolas,monospace;font-size:.85rem;
+      }
+      .method{
+        flex-shrink:0;font-weight:700;font-size:.7rem;
+        padding:.2rem .5rem;border-radius:5px;letter-spacing:.05em;
+      }
+      .method.GET{background:rgba(59,130,246,.2);color:#60a5fa}
+      .method.POST{background:rgba(168,85,247,.2);color:#c084fc}
+      .path{color:#e2e8f0;flex:1}
+      .desc{color:#64748b;font-size:.8rem;font-family:-apple-system,sans-serif}
+      pre{
+        margin:0;padding:1.25rem;background:#020617;
+        border:1px solid rgba(148,163,184,.1);border-radius:10px;
+        font-family:"SF Mono",Monaco,Consolas,monospace;font-size:.8rem;
+        color:#cbd5e1;overflow-x:auto;line-height:1.6;
+      }
+      .kw{color:#f472b6}.str{color:#86efac}.num{color:#fbbf24}
+      .meta{
+        display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+        gap:.75rem;margin-top:1rem;
+      }
+      .meta-item{
+        padding:.85rem 1rem;background:rgba(30,41,59,.4);
+        border:1px solid rgba(148,163,184,.1);border-radius:10px;
+      }
+      .meta-label{
+        font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;font-weight:700;
+      }
+      .meta-value{
+        margin-top:.3rem;color:#e2e8f0;font-size:.95rem;font-weight:600;
+        font-family:"SF Mono",Monaco,Consolas,monospace;
+      }
+      footer{margin-top:2rem;padding-top:1.25rem;border-top:1px solid rgba(148,163,184,.1);color:#64748b;font-size:.8rem;text-align:center}
+      a{color:#60a5fa;text-decoration:none;transition:color .15s}
+      a:hover{color:#93c5fd}
+      @media(max-width:600px){.card{padding:1.5rem}.metrics{grid-template-columns:1fr 1fr}}
+    </style>
+    </head>
+    <body>
+    <div class="card">
+      <div class="header">
+        <img class="icon" src="https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png" alt="Aimighty Reranker">
+        <div>
+          <h1>Aimighty Reranker (CPU)</h1>
+          <p class="subtitle">Qwen3-Reranker-0.6B &middot; OpenVINO &middot; Intel Core Ultra 9</p>
+          <span class="badge ready" id="statusBadge"><span class="dot ready" id="statusDot"></span><span id="statusText">Ready</span></span>
+        </div>
+      </div>
+      <h2>Live Metrics</h2>
+      <div class="metrics" id="metricsGrid">
+        <div class="metric"><div class="metric-label">Health Latency</div><div class="metric-value" id="metLatency">&mdash;</div></div>
+        <div class="metric"><div class="metric-label">Model</div><div class="metric-value" id="metModel">&mdash;</div></div>
+        <div class="metric"><div class="metric-label">Uptime</div><div class="metric-value" id="metUptime">&mdash;</div></div>
+      </div>
+      <h2>API Endpoints</h2>
+      <div class="endpoints">
+        <div class="endpoint"><span class="method POST">POST</span><span class="path">/v1/rerank</span><span class="desc">Rerank documents (Cohere/Jina-compatible)</span></div>
+        <div class="endpoint"><span class="method GET">GET</span><span class="path">/v1/models</span><span class="desc">List available models</span></div>
+        <div class="endpoint"><span class="method GET">GET</span><span class="path">/health</span><span class="desc">Liveness probe</span></div>
+      </div>
+      <h2>Quick Start</h2>
+      <pre><span class="kw">curl</span> -X POST <span class="str">"http://aimrerqwen3vino:8080/v1/rerank"</span> \
+      -H <span class="str">"Content-Type: application/json" \
+      -d <span class="str">'{
+        "model": "Qwen/Qwen3-Reranker-0.6B",
+        "query": "capital of Germany",
+        "documents": ["Berlin is the capital.", "Paris is in France."],
+        "top_n": 2
+      }'</span></pre>
+      <h2>Model Info</h2>
+      <div class="meta">
+        <div class="meta-item"><div class="meta-label">Model</div><div class="meta-value">Qwen3-Reranker-0.6B</div></div>
+        <div class="meta-item"><div class="meta-label">Backend</div><div class="meta-value">OpenVINO INT8</div></div>
+        <div class="meta-item"><div class="meta-label">Device</div><div class="meta-value">CPU</div></div>
+        <div class="meta-item"><div class="meta-label">Precision</div><div class="meta-value">INT8 PTQ</div></div>
+      </div>
+      <footer>
+        Built for <a href="https://github.com/bayerhazard/aimighty-reranker-cpu" target="_blank" rel="noopener">Olares</a> &middot;
+        <a href="https://huggingface.co/tomaarsen/Qwen3-Reranker-0.6B-seq-cls" target="_blank" rel="noopener">Qwen3-Reranker-0.6B</a> &middot;
+        <a href="https://docs.openvino.ai/" target="_blank" rel="noopener">OpenVINO 2026</a>
+        &middot; Auto-refresh: <span style="color:#60a5fa" id="lastRefresh">&mdash;</span>
+      </footer>
+    </div>
+    <script>
+    let startTime=Date.now();
+    async function refresh(){
+      try{
+        let t0=performance.now();
+        let hr=await fetch("/health");
+        let hl=(performance.now()-t0).toFixed(0)+" ms";
+        let ok=hr.ok;
+        let b=document.getElementById("statusBadge"),d=document.getElementById("statusDot"),st=document.getElementById("statusText");
+        if(ok){b.className="badge ready";d.className="dot ready";st.textContent="Ready"}
+        else{b.className="badge offline";d.className="dot offline";st.textContent="Offline"}
+        document.getElementById("metLatency").textContent=hl;
+        let us=(Date.now()-startTime)/1000,h=Math.floor(us/3600),m=Math.floor((us%3600)/60),s=Math.floor(us%60);
+        document.getElementById("metUptime").textContent=h>0?h+"h "+m+"m":m+"m "+s+"s";
+        try{
+          let md=await fetch("/v1/models");
+          let mj=await md.json();
+          if(mj.data&&mj.data.length)document.getElementById("metModel").textContent=mj.data[0].id.split("/").pop();
+        }catch(e){}
+        document.getElementById("lastRefresh").textContent=new Date().toLocaleTimeString("de-DE");
+      }catch(e){
+        let b=document.getElementById("statusBadge"),d=document.getElementById("statusDot"),st=document.getElementById("statusText");
+        b.className="badge offline";d.className="dot offline";st.textContent="Offline";
+      }
+    }
+    refresh();setInterval(refresh,5000);
+    </script>
+    </body>
+    </html>
