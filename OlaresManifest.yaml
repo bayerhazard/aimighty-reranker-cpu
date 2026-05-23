@@ -8,7 +8,7 @@ metadata:
   description: Qwen3-Reranker-0.6B INT8 via OpenVINO
   appid: aimrerqwen3vino
   title: Qwen3 Reranker 0.6B CPU
-  version: '0.1.3'
+  version: '0.2.0'
   categories:
     - AI
 entrances:
@@ -20,9 +20,10 @@ entrances:
     openMethod: window
     authLevel: internal
 spec:
-  versionName: "0.1.3"
+  versionName: "0.2.0"
   upgradeDescription: |
-    v0.1.3: Split ConfigMap and Deployment into separate template files (fixes YAML parsing in chartrepo).
+    v0.2.0: Stable release with GHCR CI pipeline fixes and split templates.
+v0.1.3: Split ConfigMap and Deployment into separate template files (fixes YAML parsing in chartrepo).
 v0.1.2: Fixed YAML indentation in upgradeDescription (broken block scalar).
     v0.1.1: Updated ghcr.io image path to repo-scoped for public anonymous pull access.
     v0.1.0: Initial release of OpenVINO CPU-based Qwen3-Reranker-0.6B. Completely offloaded from GPU to Intel Core Ultra 9 275HX.
