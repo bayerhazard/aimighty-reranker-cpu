@@ -1,5 +1,5 @@
 image:
-  repository: ghcr.io/bayerhazard/aimighty-reranker-cpu
+  repository: ghcr.io/bayerhazard/aimighty-reranker-cpu/reranker
   tag: latest
   pullPolicy: Always
 replicaCount: 1
