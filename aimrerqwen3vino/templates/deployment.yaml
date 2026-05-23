@@ -66,6 +66,15 @@ spec:
           name: hf-cache
         - mountPath: /dev/shm
           name: dshm
+        - mountPath: /dev/dri
+          name: dev-dri
+        - mountPath: /dev/accel
+          name: dev-accel
+        - mountPath: /host_libs
+          name: host-libs
+        - mountPath: /app/server.py
+          name: server-py
+          subPath: rerank-server.py
         startupProbe:
           {{- toYaml .Values.startupProbe | nindent 10 }}
         livenessProbe:
@@ -94,6 +103,19 @@ spec:
           medium: Memory
           sizeLimit: {{ .Values.volumes.dshm.sizeLimit }}
         name: dshm
+      - hostPath:
+          path: /dev/dri
+        name: dev-dri
+      - hostPath:
+          path: /dev/accel
+        name: dev-accel
+      - hostPath:
+          path: /usr/lib/x86_64-linux-gnu
+        name: host-libs
+      - hostPath:
+          path: "{{ .Values.userspace.appData }}/Home/Code/aimighty-reranker-cpu"
+          type: Directory
+        name: server-py
       - configMap:
           name: aimrerqwen3vino-dashboard
           items:

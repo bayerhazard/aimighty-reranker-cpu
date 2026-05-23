@@ -1,5 +1,5 @@
 image:
-  repository: ghcr.io/bayerhazard/aimighty-reranker-cpu/reranker
+  repository: ghcr.io/bayerhazard/aimighty-reranker-cpu
   tag: latest
   pullPolicy: Always
 replicaCount: 1
@@ -10,11 +10,11 @@ strategy:
   type: Recreate
 resources:
   limits:
-    cpu: '4'
-    memory: 12Gi
+    cpu: '24'
+    memory: 16Gi
   requests:
-    cpu: '1'
-    memory: 3Gi
+    cpu: '4'
+    memory: 6Gi
 nginx:
   image: nginx:alpine
 nginxResources:
@@ -28,6 +28,8 @@ env:
   MODEL_NAME: Qwen/Qwen3-Reranker-0.6B
   OV_DEVICE: CPU
   INFERENCE_NUM_THREADS: "8"
+  CPU_PINNING: "YES"
+  SCHEDULING_CORE_TYPE: "PCORE_ONLY"
   PORT: "30001"
 userspace:
   appData: /olares/rootfs/userspace/pvc-userspace-aimighty-phbiddku99qy4cuz

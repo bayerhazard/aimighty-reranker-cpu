@@ -10,6 +10,38 @@ import uuid
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("reranker")
 
+# Create symlinks for Intel GPU compute runtimes if running with GPU enabled
+if os.path.exists("/host_libs"):
+    log.info("Setting up Intel GPU runtime symlinks from host libraries...")
+    libs = [
+        ("libOpenCL.so.1", "libOpenCL.so.1"),
+        ("libOpenCL.so.1", "libOpenCL.so"),
+        ("libigc.so.1", "libigc.so.1"),
+        ("libigdfcl.so.1", "libigdfcl.so.1"),
+        ("libigdgmm.so.12", "libigdgmm.so.12"),
+        ("libopencl-clang.so.14", "libopencl-clang.so.14"),
+        ("libLLVMSPIRVLib.so.14", "libLLVMSPIRVLib.so.14"),
+        ("libclang-cpp.so.14", "libclang-cpp.so.14"),
+        ("libLLVM-14.so.1", "libLLVM-14.so.1"),
+        ("libLLVM-14.so.1", "libLLVM-14.so"),
+        # Level Zero dependencies for Arrow Lake iGPU compute
+        ("libze_intel_gpu.so.1", "libze_intel_gpu.so.1"),
+        ("libze_intel_gpu.so.1", "libze_intel_gpu.so"),
+        ("libze_loader.so.1", "libze_loader.so.1"),
+        ("libze_loader.so.1", "libze_loader.so"),
+        ("libze_tracing_layer.so.1", "libze_tracing_layer.so.1"),
+        ("libze_validation_layer.so.1", "libze_validation_layer.so.1"),
+    ]
+    for src_name, dst_name in libs:
+        src = os.path.join("/host_libs", src_name)
+        dst = os.path.join("/usr/lib/x86_64-linux-gnu", dst_name)
+        if os.path.exists(src) and not os.path.exists(dst):
+            try:
+                os.symlink(src, dst)
+                log.info("Created symlink: %s -> %s", dst, src)
+            except Exception as e:
+                log.error("Failed to symlink %s: %s", dst, e)
+
 # Creative Cooperative Optimization: Run with nice value 10 (lower priority)
 try:
     os.nice(10)
@@ -31,7 +63,7 @@ def _build_ov_config(device):
     }
     if device.upper() == "CPU":
         cfg["INFERENCE_NUM_THREADS"] = os.getenv("INFERENCE_NUM_THREADS", "8")
-        cfg["SCHEDULING_CORE_TYPE"] = "PCORE_ONLY"
+        cfg["SCHEDULING_CORE_TYPE"] = os.getenv("SCHEDULING_CORE_TYPE", "PCORE_ONLY")
         cfg["ENABLE_CPU_PINNING"] = "YES" if CPU_PINNING.upper() == "YES" else "NO"
     return cfg
 

@@ -8,7 +8,7 @@ metadata:
   description: Qwen3-Reranker-0.6B INT8 via OpenVINO
   appid: aimrerqwen3vino
   title: Qwen3 Reranker 0.6B CPU
-  version: '0.1.1'
+  version: '1.0.0'
   categories:
     - AI
 entrances:
@@ -20,10 +20,11 @@ entrances:
     openMethod: window
     authLevel: internal
 spec:
-  versionName: "0.1.1"
+  versionName: "1.0.0"
   upgradeDescription: |
+    v1.0.0: Initial stable release. Highly optimized for Intel Core Ultra 9 275HX hybrid architecture (8 threads on Golden Cove/Lion Cove P-cores, avoiding E-core thread synchronization overhead). Unlocked CPU limit to 24 cores. Integrated support for iGPU / NPU hardware routing.
     v0.1.1: Updated ghcr.io image path to repo-scoped for public anonymous pull access.
-v0.1.0: Initial release of OpenVINO CPU-based Qwen3-Reranker-0.6B. Completely offloaded from GPU to Intel Core Ultra 9 275HX.
+    v0.1.0: Initial release of OpenVINO CPU-based Qwen3-Reranker-0.6B. Completely offloaded from GPU to Intel Core Ultra 9 275HX.
   fullDescription: |
     Qwen3-Reranker-0.6B + OpenVINO on CPU, optimized for Olares One.
 
@@ -40,7 +41,7 @@ v0.1.0: Initial release of OpenVINO CPU-based Qwen3-Reranker-0.6B. Completely of
     - Built-in HTML dashboard on root endpoint (/)
 
     **Resource Usage**
-    RAM: 12 GB, CPU: 4 cores
+    RAM: 16 GB, CPU: 24 cores
     Disk: 10 GB
 
   developer: Aimighty
@@ -50,10 +51,10 @@ v0.1.0: Initial release of OpenVINO CPU-based Qwen3-Reranker-0.6B. Completely of
     - en-US
   supportArch:
     - amd64
-  limitedCpu: 4
-  requiredCpu: 1
-  requiredMemory: 12Gi
-  limitedMemory: 12Gi
+  limitedCpu: 24
+  requiredCpu: 4
+  requiredMemory: 16Gi
+  limitedMemory: 16Gi
   requiredDisk: 10Gi
 permission:
   appData: true
