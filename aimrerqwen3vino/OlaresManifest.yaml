@@ -4,23 +4,24 @@ olaresManifest.type: app
 apiVersion: 'v2'
 metadata:
   name: aimrerqwen3vino
-  icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker/main/icon.png
+  icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker-cpu/main/icon.png
   description: Qwen3-Reranker-0.6B INT8 via OpenVINO
   appid: aimrerqwen3vino
-  title: Qwen3 Reranker 0.6B CPU
-  version: '1.0.0'
+  title: AIM Qwen3 Reranker CPU
+  version: '1.0.1'
   categories:
     - AI
+    - Developer Tools
 entrances:
   - name: aimrerqwen3vino
     port: 8080
     host: aimrerqwen3vino
-    title: Qwen3 Reranker 0.6B CPU
-    icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker/main/icon.png
+    title: AIM Qwen3 Reranker CPU
+    icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker-cpu/main/icon.png
     openMethod: window
     authLevel: internal
 spec:
-  versionName: "1.0.0"
+  versionName: "1.0.1"
   upgradeDescription: |
     v1.0.0: Initial stable release. Highly optimized for Intel Core Ultra 9 275HX hybrid architecture (8 threads on Golden Cove/Lion Cove P-cores, avoiding E-core thread synchronization overhead). Unlocked CPU limit to 24 cores. Integrated support for iGPU / NPU hardware routing.
     v0.1.1: Updated ghcr.io image path to repo-scoped for public anonymous pull access.
