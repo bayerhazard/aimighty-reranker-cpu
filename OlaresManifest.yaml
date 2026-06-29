@@ -7,15 +7,15 @@ metadata:
   icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker-cpu/main/icon.png
   description: Qwen3-Reranker-0.6B INT8 via OpenVINO
   appid: aimrerqwen3vino
-  title: AIM Qwen3 Reranker CPU
-  version: '1.0.2'
+  title: Qwen3 Reranker CPU
+  version: '1.0.3'
   categories:
     - AI Agents
 entrances:
   - name: aimrerqwen3vino
     port: 8080
     host: aimrerqwen3vino
-    title: AIM Qwen3 Reranker CPU
+    title: Qwen3 Reranker CPU
     icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker-cpu/main/icon.png
     openMethod: window
     authLevel: internal
