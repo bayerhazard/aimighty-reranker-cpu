@@ -1,17 +1,21 @@
----
-olaresManifest.version: '0.10.0'
+olaresManifest.version: '0.12.0'
 olaresManifest.type: app
-apiVersion: 'v2'
+apiVersion: 'v3'
+
+workloadReplicas:
+  aimrerqwen3vino: 1
+
 metadata:
   name: aimrerqwen3vino
   icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker-cpu/main/icon.png
   description: Qwen3-Reranker-0.6B INT8 via OpenVINO
   appid: aimrerqwen3vino
   title: AIM Qwen3 Reranker CPU
-  version: '1.0.1'
+  version: '1.1.0'
   categories:
     - AI
     - Developer Tools
+
 entrances:
   - name: aimrerqwen3vino
     port: 8080
@@ -20,49 +24,60 @@ entrances:
     icon: https://raw.githubusercontent.com/bayerhazard/aimighty-reranker-cpu/main/icon.png
     openMethod: window
     authLevel: internal
+
 spec:
-  versionName: "1.0.1"
+  versionName: '1.1.0'
   upgradeDescription: |
-    v1.0.0: Initial stable release. Highly optimized for Intel Core Ultra 9 275HX hybrid architecture (8 threads on Golden Cove/Lion Cove P-cores, avoiding E-core thread synchronization overhead). Unlocked CPU limit to 24 cores. Integrated support for iGPU / NPU hardware routing.
-    v0.1.1: Updated ghcr.io image path to repo-scoped for public anonymous pull access.
-    v0.1.0: Initial release of OpenVINO CPU-based Qwen3-Reranker-0.6B. Completely offloaded from GPU to Intel Core Ultra 9 275HX.
+    v1.1.0: Deterministic build - OpenVINO 2026.2.1 + optimum-intel 2.0.0 pinned
+      (replaces unpinned git-main), base image python:3.11-slim-bookworm. OlaresManifest
+      migrated to apiVersion v3 (Olares >=1.12.6). Fixed MODEL_NAME env overriding the
+      baked model cache path. Removed dev-only server.py hostPath mount. Chart now
+      installable on Olares 1.12.6.
+    v1.0.3: Fixed deployment title to 'Qwen3 Reranker CPU'.
+    v1.0.2: Category update - moved to AI Agents.
+    v1.0.1: Renamed to 'AIM Qwen3 Reranker CPU'. Fixed icon URL.
+    v1.0.0: Initial stable release. Highly optimized for Intel Core Ultra 9 275HX
+      hybrid architecture (8 threads on P-cores). Unlocked CPU limit to 24 cores.
+      Integrated support for iGPU / NPU hardware routing.
   fullDescription: |
     Qwen3-Reranker-0.6B + OpenVINO on CPU, optimized for Olares One.
 
     **Model**
-    tomaarsen/Qwen3-Reranker-0.6B-seq-cls — a 600-million-parameter cross-encoder sequence classification model, INT8 quantized via Optimum Intel for efficient CPU inference.
+    tomaarsen/Qwen3-Reranker-0.6B-seq-cls - a 600-million-parameter cross-encoder
+    sequence classification model, INT8 quantized via Optimum Intel for efficient
+    CPU inference.
 
     **Inference Engine**
-    OpenVINO 2026.0.0+ with Hugging Face Transformers 4.55.4. Runs on Intel Core Ultra 9 275HX (Meteor Lake) CPU using Redwood/Golden Cove P-Cores.
+    OpenVINO 2026.x with Hugging Face Transformers 4.55.4. Runs on Intel Core
+    Ultra 9 275HX CPU.
 
     **Key Features**
     - Jina/Cohere-compatible API endpoints: /v1/rerank, /rerank, /v1/models, /health
     - Dynamic shapes, async endpoints, and multicore scaling using OpenVINO TBB
-    - Automatic model download and OpenVINO conversion on first start
+    - Model pre-converted and baked into the image
     - Built-in HTML dashboard on root endpoint (/)
 
     **Resource Usage**
     RAM: 16 GB, CPU: 24 cores
     Disk: 10 GB
-
   developer: Aimighty
   website: https://github.com/bayerhazard/aimighty-reranker-cpu
   sourceCode: https://github.com/bayerhazard/aimighty-reranker-cpu
-  locale:
-    - en-US
-  supportArch:
-    - amd64
-  limitedCpu: 24
-  requiredCpu: 4
+  requiredCpu: "4"
+  limitedCpu: "24"
   requiredMemory: 16Gi
   limitedMemory: 16Gi
   requiredDisk: 10Gi
+  supportArch:
+    - amd64
+
 permission:
   appData: true
+
 options:
   apiTimeout: 3600
+  allowMultipleInstall: false
   dependencies:
     - name: olares
-      version: '>=1.12.2-0'
+      version: '>=1.12.6-0'
       type: system
-  allowMultipleInstall: false

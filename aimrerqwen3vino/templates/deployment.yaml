@@ -9,7 +9,7 @@ metadata:
     applications.app.bytetrade.io/owner: aimighty
     applications.app.bytetrade.io/raw-app-name: aimrerqwen3vino
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.workloads.aimrerqwen3vino.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
     matchLabels:
@@ -72,9 +72,6 @@ spec:
           name: dev-accel
         - mountPath: /host_libs
           name: host-libs
-        - mountPath: /app/server.py
-          name: server-py
-          subPath: rerank-server.py
         startupProbe:
           {{- toYaml .Values.startupProbe | nindent 10 }}
         livenessProbe:
@@ -112,10 +109,6 @@ spec:
       - hostPath:
           path: /usr/lib/x86_64-linux-gnu
         name: host-libs
-      - hostPath:
-          path: "{{ .Values.userspace.appData }}/Home/Code/aimighty-reranker-cpu"
-          type: Directory
-        name: server-py
       - configMap:
           name: aimrerqwen3vino-dashboard
           items:
