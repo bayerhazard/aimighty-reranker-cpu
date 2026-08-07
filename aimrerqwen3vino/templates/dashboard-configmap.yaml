@@ -36,173 +36,508 @@ data:
     }
   index.html: |
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="de">
     <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Aimighty Reranker &mdash; Qwen3-Reranker-0.6B CPU</title>
-    <link rel="icon" type="image/png" href="https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIM Qwen3 Reranker CPU — Dashboard</title>
     <style>
-      *,*::before,*::after{box-sizing:border-box}
-      html,body{margin:0;padding:0}
-      body{
-        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-        background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%);
-        color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center;
-        padding:2rem 1rem;
-      }
-      .card{
-        width:100%;max-width:860px;
-        background:rgba(15,23,42,.72);
-        border:1px solid rgba(148,163,184,.15);
-        border-radius:20px;padding:2.5rem;
-        backdrop-filter:blur(20px);
-        box-shadow:0 25px 50px -12px rgba(0,0,0,.5);
-      }
-      .header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
-      .icon{width:64px;height:64px;border-radius:14px;background:#fff;padding:6px;flex-shrink:0}
-      h1{margin:0;font-size:1.75rem;font-weight:700;letter-spacing:-.02em}
-      .subtitle{margin:.25rem 0 0;color:#94a3b8;font-size:.95rem}
-      .badge{
-        display:inline-flex;align-items:center;gap:.5rem;
-        margin-top:.75rem;padding:.35rem .75rem;
-        border-radius:999px;font-size:.8rem;font-weight:600;
-      }
-      .badge.ready{background:rgba(16,185,129,.12);border:1px solid #10b98155;color:#10b981}
-      .badge.offline{background:rgba(239,68,68,.12);border:1px solid #ef444455;color:#ef4444}
-      .dot{width:8px;height:8px;border-radius:50%}
-      .dot.ready{background:#10b981;box-shadow:0 0 12px #10b981}
-      .dot.offline{background:#ef4444;box-shadow:0 0 12px #ef4444}
-      h2{margin:2rem 0 .75rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#64748b}
-      .metrics{
-        display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem;
-        margin-bottom:.25rem;
-      }
-      .metric{
-        padding:.85rem 1rem;background:rgba(30,41,59,.4);
-        border:1px solid rgba(148,163,184,.1);border-radius:10px;
-      }
-      .metric-label{
-        font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;font-weight:700;
-      }
-      .metric-value{
-        margin-top:.3rem;color:#e2e8f0;font-size:1.15rem;font-weight:600;
-        font-family:"SF Mono",Monaco,Consolas,monospace;
-      }
-      .endpoints{display:grid;gap:.5rem}
-      .endpoint{
-        display:flex;align-items:center;gap:.75rem;
-        padding:.75rem 1rem;background:rgba(30,41,59,.5);
-        border:1px solid rgba(148,163,184,.1);border-radius:10px;
-        font-family:"SF Mono",Monaco,Consolas,monospace;font-size:.85rem;
-      }
-      .method{
-        flex-shrink:0;font-weight:700;font-size:.7rem;
-        padding:.2rem .5rem;border-radius:5px;letter-spacing:.05em;
-      }
-      .method.GET{background:rgba(59,130,246,.2);color:#60a5fa}
-      .method.POST{background:rgba(168,85,247,.2);color:#c084fc}
-      .path{color:#e2e8f0;flex:1}
-      .desc{color:#64748b;font-size:.8rem;font-family:-apple-system,sans-serif}
-      pre{
-        margin:0;padding:1.25rem;background:#020617;
-        border:1px solid rgba(148,163,184,.1);border-radius:10px;
-        font-family:"SF Mono",Monaco,Consolas,monospace;font-size:.8rem;
-        color:#cbd5e1;overflow-x:auto;line-height:1.6;
-      }
-      .kw{color:#f472b6}.str{color:#86efac}.num{color:#fbbf24}
-      .meta{
-        display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-        gap:.75rem;margin-top:1rem;
-      }
-      .meta-item{
-        padding:.85rem 1rem;background:rgba(30,41,59,.4);
-        border:1px solid rgba(148,163,184,.1);border-radius:10px;
-      }
-      .meta-label{
-        font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;font-weight:700;
-      }
-      .meta-value{
-        margin-top:.3rem;color:#e2e8f0;font-size:.95rem;font-weight:600;
-        font-family:"SF Mono",Monaco,Consolas,monospace;
-      }
-      footer{margin-top:2rem;padding-top:1.25rem;border-top:1px solid rgba(148,163,184,.1);color:#64748b;font-size:.8rem;text-align:center}
-      a{color:#60a5fa;text-decoration:none;transition:color .15s}
-      a:hover{color:#93c5fd}
-      @media(max-width:600px){.card{padding:1.5rem}.metrics{grid-template-columns:1fr 1fr}}
+    /* ============================================================
+       AIM Qwen3-Reranker Dashboard
+       Design-Sprache: Rewind (Hanseatenblau + Gold-Akzent)
+       ============================================================ */
+    :root{
+      /* Surface-Scale (Navy) */
+      --b-25:#000714; --b-50:#010e1d; --b-100:#041120; --b-150:#081a2e;
+      --b-200:#10243c; --b-300:#1d3a5c; --b-400:#2f5178;
+      --b-500:#4a6c95; --b-600:#708bab; --b-700:#9bafc6;
+      --b-800:#c6d2e0; --b-900:#e6ebf1;
+    
+      /* Signal — ein Akzent (AImighty-Gold) */
+      --gold:#c9a45c; --gold-hell:#d5b371; --gold-tief:#b28b42;
+      --marke:var(--gold); --marke-hell:var(--gold-hell); --marke-tief:var(--gold-tief);
+      --auf-marke:var(--b-25);
+    
+      --bg:var(--b-50);
+      --surface:var(--b-100);
+      --surface2:var(--b-150);
+      --border:var(--b-300);
+      --border-soft:var(--b-200);
+      --text:var(--b-800);
+      --text-stark:#fff;
+      --text-dim:var(--b-500);
+      --accent:var(--marke);
+      --accent-hover:var(--marke-hell);
+    
+      --success:#4ade80; --success-bg:color-mix(in oklab, #4ade80 12%, transparent);
+      --warning:#fbbf24; --warning-bg:color-mix(in oklab, #fbbf24 12%, transparent);
+      --error:#f87171;  --error-bg:color-mix(in oklab, #f87171 12%, transparent);
+      --info-bg:color-mix(in oklab, var(--marke) 12%, transparent);
+    
+      --marke-flaeche:color-mix(in oklab, var(--marke) 12%, transparent);
+      --marke-rand:color-mix(in oklab, var(--marke) 44%, transparent);
+    
+      --fokus:var(--marke-hell);
+    
+      --schrift:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+      --mono:ui-monospace,'SF Mono','Fira Code',Menlo,Consolas,monospace;
+    
+      --radius:8px;
+      --seite:clamp(1rem, 3.5vw, 2.5rem);
+      --inhalt:60rem;
+    }
+    
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    
+    body{
+      font-family:var(--schrift);
+      background:
+        radial-gradient(1200px 600px at 80% -10%, color-mix(in oklab, var(--marke) 9%, transparent), transparent 60%),
+        radial-gradient(900px 500px at -10% 110%, color-mix(in oklab, var(--marke) 5%, transparent), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.6;
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    
+    :focus-visible{outline:2px solid var(--fokus);outline-offset:2px;border-radius:4px}
+    
+    .container{width:min(100% - var(--seite)*2, var(--inhalt));margin-inline:auto;padding-block:24px}
+    
+    /* Mikro-Label (Kicker-Pattern) */
+    .kicker{
+      display:inline-flex;align-items:center;gap:.55rem;
+      font-family:var(--mono);font-size:.68rem;font-weight:600;
+      letter-spacing:.18em;text-transform:uppercase;
+      color:var(--marke);margin-bottom:1.1rem;
+    }
+    .kicker::before{content:"";inline-size:1.4rem;block-size:1px;background:var(--marke-rand);display:block}
+    
+    /* Kopfzeile */
+    .header{
+      display:flex;align-items:center;justify-content:space-between;gap:1rem;
+      margin-bottom:1.75rem;padding-block:.25rem 1rem;
+      border-bottom:1px solid var(--border-soft);
+    }
+    .header h1{
+      font-size:clamp(1.4rem, 1.1rem + 1vw, 1.7rem);
+      font-weight:700;letter-spacing:-.02em;color:var(--text-stark);line-height:1.1;
+    }
+    .header h1::first-letter{color:var(--marke)}
+    .header .subtitle{font-size:.82rem;color:var(--text-dim);margin-top:.15rem}
+    .header .health{display:inline-flex;align-items:center;gap:8px}
+    
+    /* Sprachumschalter */
+    .lang-toggle{
+      display:inline-flex;gap:2px;background:var(--surface);border:1px solid var(--border-soft);
+      border-radius:6px;padding:2px;flex-shrink:0;
+    }
+    .lang-toggle button{
+      border:none;background:transparent;color:var(--text-dim);
+      font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.1em;
+      padding:.3rem .6rem;border-radius:4px;cursor:pointer;transition:all .16s ease;
+    }
+    .lang-toggle button:hover{color:var(--text-stark)}
+    .lang-toggle button.active{background:var(--marke);color:var(--auf-marke)}
+    
+    /* Karten */
+    .card{
+      background:linear-gradient(180deg, var(--surface), var(--b-100));
+      border:1px solid var(--border-soft);
+      border-radius:var(--radius);
+      padding:1.1rem 1.2rem;
+      margin-bottom:16px;
+    }
+    .card-title{
+      font-size:.95rem;font-weight:600;color:var(--text-stark);
+      margin-bottom:14px;display:flex;align-items:center;gap:8px;
+    }
+    .card-title .icon{font-size:1.05rem;color:var(--marke)}
+    
+    /* Metrik-Grid */
+    .metrics{display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:.75rem}
+    .metric{background:var(--b-25);border:1px solid var(--border-soft);border-radius:6px;padding:.7rem .8rem}
+    .metric .k{
+      font-size:.64rem;color:var(--text-dim);text-transform:uppercase;
+      letter-spacing:.14em;font-family:var(--mono);font-weight:600;margin-bottom:.25rem;
+    }
+    .metric .v{font-size:1.05rem;color:var(--text-stark);font-weight:600;font-family:var(--mono)}
+    .metric .v.dim{color:var(--text-dim)}
+    
+    /* Status-Badge */
+    .badge{
+      display:inline-flex;align-items:center;gap:.5rem;
+      padding:.35rem .8rem;border-radius:999px;font-size:.78rem;font-weight:600;
+      background:var(--warning-bg);border:1px solid color-mix(in oklab, var(--warning) 40%, transparent);color:var(--warning);
+    }
+    .badge.ready{background:var(--success-bg);border-color:color-mix(in oklab, var(--success) 40%, transparent);color:var(--success)}
+    .badge.offline{background:var(--error-bg);border-color:color-mix(in oklab, var(--error) 40%, transparent);color:var(--error)}
+    .dot{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+    
+    /* Endpoints */
+    .endpoints{display:grid;gap:.5rem}
+    .endpoint{display:flex;align-items:center;gap:.75rem;padding:.6rem .8rem;background:var(--b-25);border:1px solid var(--border-soft);border-radius:6px;font-family:var(--mono);font-size:.8rem}
+    .method{flex-shrink:0;font-weight:700;font-size:.62rem;padding:.15rem .45rem;border-radius:4px;letter-spacing:.06em}
+    .method.POST{background:var(--marke-flaeche);color:var(--marke)}
+    .method.GET{background:var(--info-bg);color:var(--text)}
+    .path{color:var(--text);flex:1}
+    .desc{color:var(--text-dim);font-size:.74rem;font-family:var(--schrift)}
+    
+    /* Code */
+    pre{margin:.5rem 0 0;padding:.9rem 1rem;background:var(--b-25);border:1px solid var(--border-soft);border-radius:6px;font-family:var(--mono);font-size:.76rem;color:var(--text);overflow-x:auto;line-height:1.7}
+    .kw{color:var(--marke)}.str{color:var(--success)}.num{color:var(--warning)}
+    
+    /* Buttons */
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+      block-size:2.5rem;padding-inline:1.1rem;
+      border:1px solid var(--border);border-radius:6px;
+      background:var(--surface2);color:var(--text);
+      font-family:var(--schrift);font-size:.85rem;font-weight:600;line-height:1;
+      white-space:nowrap;cursor:pointer;user-select:none;
+      transition:background-color .16s ease,border-color .16s ease,color .16s ease;
+    }
+    .btn:hover{border-color:var(--marke-rand);background:var(--marke-flaeche);color:var(--text-stark)}
+    .btn.primary{background:var(--marke);border-color:var(--marke);color:var(--auf-marke)}
+    .btn.primary:hover{background:var(--marke-hell);border-color:var(--marke-hell)}
+    .btn:disabled{opacity:.5;cursor:not-allowed;pointer-events:none}
+    
+    /* Textarea + Controls */
+    textarea{
+      width:100%;min-height:110px;padding:.7rem .85rem;border-radius:6px;
+      border:1px solid var(--border);background:var(--surface2);color:var(--text);
+      font-family:var(--schrift);font-size:.9rem;line-height:1.6;resize:vertical;outline:none;
+    }
+    textarea:focus{border-color:var(--marke)}
+    textarea::placeholder{color:var(--text-dim)}
+    .controls{display:flex;gap:.75rem;margin-top:.85rem;align-items:center}
+    select{
+      flex:1;padding:.55rem .7rem;border-radius:6px;
+      border:1px solid var(--border);background:var(--surface2);color:var(--text);
+      font-size:.9rem;outline:none;cursor:pointer;font-family:var(--schrift);
+    }
+    select:focus{border-color:var(--marke)}
+    select option{background:var(--surface)}
+    
+    /* Ergebnis-Liste */
+    .scores{margin-top:.9rem;display:grid;gap:.5rem}
+    .score-row{display:flex;align-items:center;gap:.75rem;padding:.55rem .8rem;background:var(--b-25);border:1px solid var(--border-soft);border-radius:6px;font-size:.82rem}
+    .score-idx{font-family:var(--mono);font-size:.68rem;color:var(--text-dim);flex-shrink:0;width:1.6rem}
+    .score-text{flex:1;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .score-val{font-family:var(--mono);font-size:.78rem;color:var(--marke);font-weight:600;flex-shrink:0}
+    
+    /* Status */
+    .status{margin-top:1rem;font-size:.85rem;color:var(--text-dim);min-height:1.5rem;display:flex;align-items:center;gap:8px}
+    .status.error{color:var(--error)}
+    .status.success{color:var(--success)}
+    .spinner{
+      display:inline-block;width:14px;height:14px;
+      border:2px solid var(--border);border-top-color:var(--marke);
+      border-radius:50%;animation:spin .8s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    
+    /* Health + Footer */
+    .foot{
+      margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border-soft);
+      display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+      font-size:.74rem;color:var(--text-dim);font-family:var(--mono);
+    }
+    .foot .health{display:inline-flex;align-items:center;gap:6px}
+    .foot .health .ok{color:var(--success)}
+    .foot .health .bad{color:var(--error)}
+    .foot .cfg{display:flex;gap:14px;flex-wrap:wrap}
+    .foot .cfg span{white-space:nowrap}
+    .foot .cfg b{color:var(--text);font-weight:600}
+    
+    @media (max-width:600px){
+      .header{flex-direction:column;gap:12px;align-items:flex-start}
+      .controls{flex-wrap:wrap}
+      .controls select{flex:none;width:100%}
+      .btn{flex:1}
+    }
+    
+    ::-webkit-scrollbar{width:8px;height:8px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+    ::-webkit-scrollbar-thumb:hover{background:var(--text-dim)}
+    
+    .hidden{display:none !important}
+    
+    @media (prefers-reduced-motion:reduce){
+      *{animation:none !important;transition:none !important}
+    }
     </style>
     </head>
     <body>
-    <div class="card">
+    <div class="container">
+    
       <div class="header">
-        <img class="icon" src="https://github.com/bayerhazard/aimighty-reranker/raw/main/icon.png" alt="Aimighty Reranker">
         <div>
-          <h1>Aimighty Reranker (CPU)</h1>
-          <p class="subtitle">Qwen3-Reranker-0.6B &middot; OpenVINO &middot; Intel Core Ultra 9</p>
-          <span class="badge ready" id="statusBadge"><span class="dot ready" id="statusDot"></span><span id="statusText">Ready</span></span>
+          <h1>Qwen3 Reranker CPU</h1>
+          <div class="subtitle" data-i18n="subtitle">Qwen3-Reranker-0.6B via OpenVINO — CPU, INT8, Jina/Cohere-kompatibel</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="badge offline" id="statusBadge"><span class="dot"></span><span id="statusText" data-i18n="healthChecking">Prüfe…</span></span>
+          <div class="lang-toggle" role="group" aria-label="Sprache">
+            <button type="button" id="langDE" class="active">DE</button>
+            <button type="button" id="langEN">EN</button>
+          </div>
         </div>
       </div>
-      <h2>Live Metrics</h2>
-      <div class="metrics" id="metricsGrid">
-        <div class="metric"><div class="metric-label">Health Latency</div><div class="metric-value" id="metLatency">&mdash;</div></div>
-        <div class="metric"><div class="metric-label">Model</div><div class="metric-value" id="metModel">&mdash;</div></div>
-        <div class="metric"><div class="metric-label">Uptime</div><div class="metric-value" id="metUptime">&mdash;</div></div>
+    
+      <span class="kicker" data-i18n="kicker">Retrieval-Reranking</span>
+    
+      <!-- Karte 1: Live-Metriken -->
+      <div class="card">
+        <div class="card-title"><span class="icon">▤</span><span data-i18n="metricsTitle">Live-Metriken</span></div>
+        <div class="metrics">
+          <div class="metric"><div class="k" data-i18n="metHealth">Health-Latenz</div><div class="v" id="metLatency">—</div></div>
+          
+          
+          <div class="metric"><div class="k" data-i18n="metEngine">Engine</div><div class="v">OpenVINO</div></div>
+          <div class="metric"><div class="k" data-i18n="metModel">Modell</div><div class="v dim" id="metModel">—</div></div>
+          <div class="metric"><div class="k" data-i18n="metUptime">Laufzeit</div><div class="v" id="metUptime">—</div></div>
+        </div>
       </div>
-      <h2>API Endpoints</h2>
-      <div class="endpoints">
-        <div class="endpoint"><span class="method POST">POST</span><span class="path">/v1/rerank</span><span class="desc">Rerank documents (Cohere/Jina-compatible)</span></div>
-        <div class="endpoint"><span class="method GET">GET</span><span class="path">/v1/models</span><span class="desc">List available models</span></div>
-        <div class="endpoint"><span class="method GET">GET</span><span class="path">/health</span><span class="desc">Liveness probe</span></div>
+    
+      <!-- Karte 2: ReRank-Test -->
+      <div class="card">
+        <div class="card-title"><span class="icon">●</span><span data-i18n="testTitle">ReRank-Test</span></div>
+        <textarea id="queryInput" data-i18n-ph="queryPh" placeholder="Suchanfrage eingeben…">What is the capital of France?</textarea>
+        <div class="controls">
+          <select id="docSelect" aria-label="Dokumente">
+            <option value="preset" data-i18n="docPreset">Beispieldokumente</option>
+            <option value="custom">Custom</option>
+          </select>
+          <button class="btn primary" id="rerankBtn" data-i18n="rerankBtn">Reranken</button>
+        </div>
+        <div id="docList" class="scores">
+          <div class="score-row"><span class="score-idx">1</span><span class="score-text">Paris is the capital of France.</span><span class="score-val">0.99</span></div>
+          <div class="score-row"><span class="score-idx">2</span><span class="score-text">Berlin is the capital of Germany.</span><span class="score-val">0.12</span></div>
+          <div class="score-row"><span class="score-idx">3</span><span class="score-text">The Eiffel Tower is in Paris.</span><span class="score-val">0.87</span></div>
+        </div>
+        <div class="status" id="status"></div>
       </div>
-      <h2>Quick Start</h2>
-      <pre><span class="kw">curl</span> -X POST <span class="str">"http://aimrerqwen3vino:8080/v1/rerank"</span> \
-      -H <span class="str">"Content-Type: application/json" \
-      -d <span class="str">'{
-        "model": "Qwen/Qwen3-Reranker-0.6B",
-        "query": "capital of Germany",
-        "documents": ["Berlin is the capital.", "Paris is in France."],
-        "top_n": 2
-      }'</span></pre>
-      <h2>Model Info</h2>
-      <div class="meta">
-        <div class="meta-item"><div class="meta-label">Model</div><div class="meta-value">Qwen3-Reranker-0.6B</div></div>
-        <div class="meta-item"><div class="meta-label">Backend</div><div class="meta-value">OpenVINO INT8</div></div>
-        <div class="meta-item"><div class="meta-label">Device</div><div class="meta-value">CPU</div></div>
-        <div class="meta-item"><div class="meta-label">Precision</div><div class="meta-value">INT8 PTQ</div></div>
+    
+      <!-- Karte 3: API-Endpoints -->
+      <div class="card">
+        <div class="card-title"><span class="icon">▦</span><span data-i18n="epTitle">API-Endpoints</span></div>
+        <div class="endpoints">
+          <div class="endpoint"><span class="method POST">POST</span><span class="path">/v1/rerank</span><span class="desc" data-i18n="epRerank">Dokumente neu bewerten (Cohere/Jina-kompatibel)</span></div>
+          <div class="endpoint"><span class="method GET">GET</span><span class="path">/v1/models</span><span class="desc" data-i18n="epModels">Modelle auflisten</span></div>
+          <div class="endpoint"><span class="method GET">GET</span><span class="path">/health</span><span class="desc" data-i18n="epHealth">Liveness-Check</span></div>
+        </div>
       </div>
-      <footer>
-        Built for <a href="https://github.com/bayerhazard/aimighty-reranker-cpu" target="_blank" rel="noopener">Olares</a> &middot;
-        <a href="https://huggingface.co/tomaarsen/Qwen3-Reranker-0.6B-seq-cls" target="_blank" rel="noopener">Qwen3-Reranker-0.6B</a> &middot;
-        <a href="https://docs.openvino.ai/" target="_blank" rel="noopener">OpenVINO 2026</a>
-        &middot; Auto-refresh: <span style="color:#60a5fa" id="lastRefresh">&mdash;</span>
-      </footer>
+    
+      <!-- Karte 4: Modell-Info -->
+      <div class="card">
+        <div class="card-title"><span class="icon">◎</span><span data-i18n="modelTitle">Modell-Info</span></div>
+        <div class="metrics">
+          <div class="metric"><div class="k" data-i18n="svcBackend">Backend</div><div class="v dim">OpenVINO 2026.2</div></div>
+          <div class="metric"><div class="k" data-i18n="svcCtx">Kontext</div><div class="v">8192 Tokens</div></div>
+          <div class="metric"><div class="k" data-i18n="svcGpu">Hardware</div><div class="v">Intel CPU</div></div>
+          <div class="metric"><div class="k" data-i18n="svcPrec">Präzision</div><div class="v">bfloat16</div></div>
+        </div>
+      </div>
+    
+      <div class="foot">
+        <div class="health" id="healthInfo"><span data-i18n="healthChecking">Status wird geprüft…</span></div>
+        <div class="cfg">
+          <span><b data-i18n="cfgModel">Modell</b>: qwen3-reranker-0.6b-int8</span>
+          <span id="lastRefresh"></span>
+        </div>
+      </div>
     </div>
+    
     <script>
-    let startTime=Date.now();
-    async function refresh(){
-      try{
-        let t0=performance.now();
-        let hr=await fetch("/health");
-        let hl=(performance.now()-t0).toFixed(0)+" ms";
-        let ok=hr.ok;
-        let b=document.getElementById("statusBadge"),d=document.getElementById("statusDot"),st=document.getElementById("statusText");
-        if(ok){b.className="badge ready";d.className="dot ready";st.textContent="Ready"}
-        else{b.className="badge offline";d.className="dot offline";st.textContent="Offline"}
-        document.getElementById("metLatency").textContent=hl;
-        let us=(Date.now()-startTime)/1000,h=Math.floor(us/3600),m=Math.floor((us%3600)/60),s=Math.floor(us%60);
-        document.getElementById("metUptime").textContent=h>0?h+"h "+m+"m":m+"m "+s+"s";
-        try{
-          let md=await fetch("/v1/models");
-          let mj=await md.json();
-          if(mj.data&&mj.data.length)document.getElementById("metModel").textContent=mj.data[0].id.split("/").pop();
-        }catch(e){}
-        document.getElementById("lastRefresh").textContent=new Date().toLocaleTimeString("de-DE");
-      }catch(e){
-        let b=document.getElementById("statusBadge"),d=document.getElementById("statusDot"),st=document.getElementById("statusText");
-        b.className="badge offline";d.className="dot offline";st.textContent="Offline";
+    /* ===== i18n DE/EN ===== */
+    const I18N = {
+      de: {
+        subtitle: 'Qwen3-Reranker-0.6B via OpenVINO — CPU, INT8, Jina/Cohere-kompatibel',
+        kicker: 'Retrieval-Reranking',
+        metricsTitle: 'Live-Metriken',
+        metHealth: 'Health-Latenz',
+        metEngine: 'Engine',
+        metModel: 'Modell',
+        metUptime: 'Laufzeit',
+        testTitle: 'ReRank-Test',
+        queryPh: 'Suchanfrage eingeben…',
+        docPreset: 'Beispieldokumente',
+        rerankBtn: 'Reranken',
+        epTitle: 'API-Endpoints',
+        epRerank: 'Dokumente neu bewerten (Cohere/Jina-kompatibel)',
+        epModels: 'Modelle auflisten',
+        epHealth: 'Liveness-Check',
+        modelTitle: 'Modell-Info',
+        svcBackend: 'Backend',
+        svcCtx: 'Kontext',
+        svcGpu: 'Hardware',
+        svcPrec: 'Präzision',
+        healthChecking: 'Status wird geprüft…',
+        healthOk: 'Bereit',
+        healthBad: 'Nicht erreichbar',
+        cfgModel: 'Modell',
+        ready: 'Bereit',
+        offline: 'Offline',
+        reranking: 'Reranking läuft…',
+        done: 'Fertig',
+        errNoQuery: 'Bitte zuerst eine Suchanfrage eingeben.',
+        errNoDocs: 'Keine Dokumente zum Reranken.',
+      },
+      en: {
+        subtitle: 'Qwen3-Reranker-0.6B via OpenVINO — CPU, INT8, Jina/Cohere-kompatibel',
+        kicker: 'Retrieval Reranking',
+        metricsTitle: 'Live Metrics',
+        metHealth: 'Health Latency',
+        metEngine: 'Engine',
+        metModel: 'Model',
+        metUptime: 'Uptime',
+        testTitle: 'Rerank Test',
+        queryPh: 'Enter search query…',
+        docPreset: 'Sample documents',
+        rerankBtn: 'Rerank',
+        epTitle: 'API Endpoints',
+        epRerank: 'Rerank documents (Cohere/Jina-compatible)',
+        epModels: 'List models',
+        epHealth: 'Liveness probe',
+        modelTitle: 'Model Info',
+        svcBackend: 'Backend',
+        svcCtx: 'Context',
+        svcGpu: 'Hardware',
+        svcPrec: 'Precision',
+        healthChecking: 'Checking status…',
+        healthOk: 'Ready',
+        healthBad: 'Unreachable',
+        cfgModel: 'Model',
+        ready: 'Ready',
+        offline: 'Offline',
+        reranking: 'Reranking…',
+        done: 'Done',
+        errNoQuery: 'Please enter a search query first.',
+        errNoDocs: 'No documents to rerank.',
+      }
+    };
+    
+    let LANG = 'de';
+    
+    function applyLang() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (I18N[LANG][key]) el.textContent = I18N[LANG][key];
+      });
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        if (I18N[LANG][key]) el.placeholder = I18N[LANG][key];
+      });
+      document.getElementById('langDE').classList.toggle('active', LANG === 'de');
+      document.getElementById('langEN').classList.toggle('active', LANG === 'en');
+      document.documentElement.lang = LANG === 'de' ? 'de' : 'en';
+    }
+    document.getElementById('langDE').addEventListener('click', () => { LANG = 'de'; applyLang(); });
+    document.getElementById('langEN').addEventListener('click', () => { LANG = 'en'; applyLang(); });
+    applyLang();
+    
+    /* ===== API-Basis ===== */
+    const API_URL = window.location.origin + '/v1/rerank';
+    const MODEL = 'qwen3-reranker-0.6b';
+    
+    /* ===== Elemente ===== */
+    const statusEl = document.getElementById('status');
+    const statusBadge = document.getElementById('statusBadge');
+    const statusText = document.getElementById('statusText');
+    const rerankBtn = document.getElementById('rerankBtn');
+    const queryInput = document.getElementById('queryInput');
+    
+    function setStatus(cls, msg) {
+      statusEl.className = 'status' + (cls ? ' ' + cls : '');
+      statusEl.textContent = msg;
+    }
+    function setLoading(msg) {
+      statusEl.className = 'status';
+      statusEl.innerHTML = '<span class="spinner"></span>' + msg;
+    }
+    
+    /* ===== Health + Metriken ===== */
+    const startTime = Date.now();
+    
+    async function refresh() {
+      try {
+        const t0 = performance.now();
+        const hr = await fetch('/health');
+        const hl = (performance.now() - t0).toFixed(0) + ' ms';
+        const ok = hr.ok;
+        if (ok) { statusBadge.className = 'badge ready'; statusText.textContent = I18N[LANG].ready; }
+        else { statusBadge.className = 'badge offline'; statusText.textContent = I18N[LANG].offline; }
+        document.getElementById('metLatency').textContent = hl;
+    
+        const us = (Date.now() - startTime) / 1000;
+        const h = Math.floor(us / 3600), m = Math.floor((us % 3600) / 60), s = Math.floor(us % 60);
+        document.getElementById('metUptime').textContent = h > 0 ? h + 'h ' + m + 'm' : m + 'm ' + s + 's';
+    
+        try {
+          const md = await fetch('/v1/models');
+          const mj = await md.json();
+          if (mj.data && mj.data.length) document.getElementById('metModel').textContent = mj.data[0].id.split('/').pop();
+        } catch (e) {}
+        document.getElementById('lastRefresh').textContent = new Date().toLocaleTimeString(LANG === 'de' ? 'de-DE' : 'en-GB');
+      } catch (e) {
+        statusBadge.className = 'badge offline';
+        statusText.textContent = I18N[LANG].offline;
       }
     }
-    refresh();setInterval(refresh,5000);
+    
+    /* ===== Rerank ===== */
+    const docs = [
+      'Paris is the capital of France.',
+      'Berlin is the capital of Germany.',
+      'The Eiffel Tower is in Paris.'
+    ];
+    
+    async function doRerank() {
+      const query = queryInput.value.trim();
+      if (!query) { setStatus('error', I18N[LANG].errNoQuery); return; }
+      rerankBtn.disabled = true;
+      setLoading(I18N[LANG].reranking);
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: MODEL, query: query, documents: docs })
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || err.message || ('HTTP ' + res.status));
+        }
+        const data = await res.json();
+        const results = data.results || data.scores || [];
+        const docList = document.getElementById('docList');
+        docList.innerHTML = results.map((r, i) =>
+          '<div class="score-row"><span class="score-idx">' + (i + 1) + '</span>' +
+          '<span class="score-text"></span>' +
+          '<span class="score-val">' + (typeof r.relevance_score === 'number' ? r.relevance_score.toFixed(3) : r.score.toFixed(3)) + '</span></div>'
+        ).join('');
+        docList.querySelectorAll('.score-text').forEach((el, i) => {
+          const idx = results[i].index;
+          el.textContent = docs[idx] || '';
+        });
+        setStatus('success', I18N[LANG].done);
+      } catch (e) {
+        setStatus('error', 'Error: ' + e.message);
+      } finally {
+        rerankBtn.disabled = false;
+      }
+    }
+    
+    rerankBtn.addEventListener('click', doRerank);
+    
+    refresh();
+    setInterval(refresh, 5000);
     </script>
     </body>
     </html>
+    
