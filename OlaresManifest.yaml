@@ -11,7 +11,7 @@ metadata:
   description: Qwen3-Reranker-0.6B via OpenVINO on CPU / Intel iGPU — Jina/Cohere-compatible /v1/rerank
   appid: aimrerqwen3vino
   title: AIM Qwen3 0.6B Reranker CPU
-  version: '26.08.2'
+  version: '26.08.3'
   categories:
     - AI
 
@@ -25,8 +25,12 @@ entrances:
     authLevel: internal
 
 spec:
-  versionName: '26.08.2'
+  versionName: '26.08.3'
   upgradeDescription: |
+    v26.08.3: Intel GPU device access — the deployment carries the
+      applications.app.bytetrade.io/gpu-inject annotation so the app-service webhook
+      injects the gpu.intel.com/i915 extended resource (Intel GPU device plugin) into
+      the server container, granting /dev/dri access without privileged mode. No image change.
     v26.08.2: Intel accelerator support — new "intel" compute mode via spec.accelerator.
       Intel GPU runtime baked into the image (ubuntu 24.04 base, intel-opencl-icd +
       intel-level-zero-gpu + level-zero). Runs on the Core Ultra 9 275HX iGPU through

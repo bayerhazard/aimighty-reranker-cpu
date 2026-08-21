@@ -8,6 +8,10 @@ metadata:
     applications.app.bytetrade.io/name: aimrerqwen3vino
     applications.app.bytetrade.io/owner: aimighty
     applications.app.bytetrade.io/raw-app-name: aimrerqwen3vino
+  annotations:
+    # app-service webhook injects the Intel GPU extended resource (gpu.intel.com/i915)
+    # into this container only, granting /dev/dri access without privileged mode.
+    applications.app.bytetrade.io/gpu-inject: "aimrerqwen3vino"
 spec:
   replicas: {{ .Values.workloads.aimrerqwen3vino.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
@@ -48,7 +52,7 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
       containers:
-      # OpenVINO CPU Inferenz-Server
+      # OpenVINO Inferenz-Server (CPU oder Intel iGPU via Level Zero)
       - name: aimrerqwen3vino
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
