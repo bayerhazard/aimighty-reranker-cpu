@@ -74,17 +74,17 @@ spec:
     - amd64
   accelerator:
     - mode: cpu
-      requiredCpu: "4"
-      limitedCpu: "24"
+      requiredCpu: "5"
+      limitedCpu: "25"
       requiredMemory: 16Gi
-      limitedMemory: 16Gi
+      limitedMemory: 17Gi
       requiredDisk: 10Gi
       limitedDisk: 10Gi
     - mode: intel
-      requiredCpu: "4"
-      limitedCpu: "24"
+      requiredCpu: "5"
+      limitedCpu: "25"
       requiredMemory: 16Gi
-      limitedMemory: 16Gi
+      limitedMemory: 17Gi
       requiredDisk: 10Gi
       limitedDisk: 10Gi
 
