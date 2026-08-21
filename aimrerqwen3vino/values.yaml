@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/bayerhazard/aimighty-reranker-cpu/reranker
-  tag: 0.6b-openvino-2026.2.1-opt2.0.0
+  tag: 0.6b-openvino-2026.2.1-opt2.0.0-intel
   pullPolicy: IfNotPresent
 workloads:
   aimrerqwen3vino:
@@ -27,7 +27,6 @@ nginxResources:
     cpu: 50m
     memory: 32Mi
 env:
-  OV_DEVICE: CPU
   INFERENCE_NUM_THREADS: "8"
   CPU_PINNING: "YES"
   SCHEDULING_CORE_TYPE: "PCORE_ONLY"

@@ -1,10 +1,29 @@
-FROM python:3.11-slim-bookworm
+FROM ubuntu:24.04
 
-RUN pip install --no-cache-dir \
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates wget gnupg python3 python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Intel GPU compute runtime for Arrow Lake iGPU (OpenVINO GPU plugin / Level Zero)
+RUN wget -qO - https://repositories.intel.com/gpu/intel-graphics.key | gpg --dearmor --output /usr/share/keyrings/intel-graphics.gpg \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/intel-graphics.gpg] https://repositories.intel.com/gpu/ubuntu noble client" > /etc/apt/sources.list.d/intel.gpu.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        intel-opencl-icd \
+        intel-level-zero-gpu \
+        level-zero \
+        intel-igc-cm \
+        intel-ocloc \
+        ocl-icd-libopencl1 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --no-cache-dir --break-system-packages \
         openvino==2026.2.1 \
         optimum-intel[openvino]==2.0.0 \
         transformers==4.55.4 \
-        fastapi uvicorn[standard] torch>=2.4.0 tokenizers>=0.21 sentencepiece
+        fastapi "uvicorn[standard]" "torch>=2.4.0" "tokenizers>=0.21" sentencepiece
 
 # Pre-convert tomaarsen/Qwen3-Reranker-0.6B-seq-cls to OpenVINO INT8 during build
 RUN optimum-cli export openvino \

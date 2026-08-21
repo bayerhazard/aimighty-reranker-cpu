@@ -9,7 +9,14 @@ echo ""
 CACHE_DIR="${MODEL_CACHE_DIR:-/models_cache}"
 MODEL_SUBDIR="${MODEL_NAME:-aimighty-reranker-0.6b}"
 MODEL_PATH="${CACHE_DIR}/${MODEL_SUBDIR}"
-export OV_DEVICE="${OV_DEVICE:-CPU}"
+
+# Auto-detect device: GPU (Intel iGPU) if the render node is openable, else CPU.
+# OV_DEVICE is respected as an explicit override.
+DETECTED_DEVICE="CPU"
+if (exec 3<> /dev/dri/renderD128) 2>/dev/null; then
+    DETECTED_DEVICE="GPU"
+fi
+export OV_DEVICE="${OV_DEVICE:-${DETECTED_DEVICE}}"
 
 echo "[1/4] Checking model cache..."
 echo "  Cache directory: ${CACHE_DIR}"
