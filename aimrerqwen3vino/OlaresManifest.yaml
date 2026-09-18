@@ -11,7 +11,7 @@ metadata:
   description: Qwen3-Reranker-0.6B via OpenVINO on CPU / Intel iGPU — Jina/Cohere-compatible /v1/rerank
   appid: aimrerqwen3vino
   title: AIM Qwen3 0.6B Reranker CPU
-  version: '26.08.4'
+  version: '26.9.1'
   categories:
     - AI
 
@@ -25,33 +25,9 @@ entrances:
     authLevel: internal
 
 spec:
-  versionName: '26.08.4'
+  versionName: '26.9.1'
   upgradeDescription: |
-    v26.08.4: Direct extended-resource request — the server container now requests
-      gpu.intel.com/i915 in resources.limits (Intel GPU device plugin grants /dev/dri
-      access). Olares 1.12.6 webhook only sets GPU_TYPE/nodeSelector, so the resource
-      is requested by the chart itself. No image change.
-    v26.08.3: Intel GPU device access — the deployment carries the
-      applications.app.bytetrade.io/gpu-inject annotation so the app-service webhook
-      injects the gpu.intel.com/i915 extended resource (Intel GPU device plugin) into
-      the server container, granting /dev/dri access without privileged mode. No image change.
-    v26.08.2: Intel accelerator support — new "intel" compute mode via spec.accelerator.
-      Intel GPU runtime baked into the image (ubuntu 24.04 base, intel-opencl-icd +
-      intel-level-zero-gpu + level-zero). Runs on the Core Ultra 9 275HX iGPU through
-      Level Zero, ~2-2.5x faster than CPU (PoC-verified 2026-08-20). Auto device
-      detection in entrypoint (GPU if render node openable, else CPU). Built for Olares 1.12.6.
-    v26.08.1: Unified naming — title "AIM Qwen3 0.6B Reranker CPU", English descriptions. Built for Olares 1.12.6.
-    v1.1.0: Deterministic build - OpenVINO 2026.2.1 + optimum-intel 2.0.0 pinned
-      (replaces unpinned git-main), base image python:3.11-slim-bookworm. OlaresManifest
-      migrated to apiVersion v3 (Olares >=1.12.6). Fixed MODEL_NAME env overriding the
-      baked model cache path. Removed dev-only server.py hostPath mount. Chart now
-      installable on Olares 1.12.6.
-    v1.0.3: Fixed deployment title to 'Qwen3 Reranker CPU'.
-    v1.0.2: Category update - moved to AI Agents.
-    v1.0.1: Renamed to 'AIM Qwen3 Reranker CPU'. Fixed icon URL.
-    v1.0.0: Initial stable release. Highly optimized for Intel Core Ultra 9 275HX
-      hybrid architecture (8 threads on P-cores). Unlocked CPU limit to 24 cores.
-      Integrated support for iGPU / NPU hardware routing.
+    Initial Release for AImighty Olares One
   fullDescription: |
     Qwen3-Reranker-0.6B + OpenVINO on CPU or Intel integrated GPU (iGPU accelerator), optimized for Olares One.
 

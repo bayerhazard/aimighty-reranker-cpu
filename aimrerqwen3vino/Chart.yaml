@@ -2,8 +2,8 @@ apiVersion: v2
 name: aimrerqwen3vino
 description: Qwen3-Reranker-0.6B via OpenVINO on CPU — Jina/Cohere-compatible /v1/rerank
 type: application
-version: 26.08.4
-appVersion: "26.08.4"
+version: 26.9.1
+appVersion: "26.9.1"
 keywords:
   - ai
   - reranker

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="Reranker">
+  <title>Reranker</title>
+  <defs>
+    <linearGradient id="grund" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#97D3A4"/><stop offset=".52" stop-color="#85CB94"/><stop offset="1" stop-color="#6EA87B"/>
+    </linearGradient>
+    <linearGradient id="wappen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#415C78"/><stop offset="1" stop-color="#16293D"/>
+    </linearGradient>
+    <linearGradient id="zeichen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#A0D6AC"/><stop offset="1" stop-color="#72AF7F"/>
+    </linearGradient>
+    <linearGradient id="saum" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF" stop-opacity=".40"/><stop offset=".45" stop-color="#FFF" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".12"/>
+    </linearGradient>
+    <linearGradient id="rand" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF" stop-opacity=".32"/><stop offset=".5" stop-color="#FFF" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".08"/>
+    </linearGradient>
+    <filter id="weich" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10"/></filter>
+    <filter id="weichS" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5.56"/></filter>
+    <clipPath id="kachel"><rect width="160" height="160" rx="35.84"/></clipPath>
+    <clipPath id="wappenClip"><path transform="translate(40.32 30.40) scale(0.72145)" d="M 55 137.5 C 39.0729 133.4896 25.9245 124.3516 15.5547 110.0859 C 5.1849 95.8203 0 79.9792 0 62.5625 L 0 20.625 L 55 0 L 110 20.625 L 110 62.5625 C 110 79.9792 104.8151 95.8203 94.4453 110.0859 C 84.0755 124.3516 70.9271 133.4896 55 137.5 Z"/></clipPath>
+    <mask id="wappenMaske"><path transform="translate(40.32 30.40) scale(0.72145)" d="M 55 137.5 C 39.0729 133.4896 25.9245 124.3516 15.5547 110.0859 C 5.1849 95.8203 0 79.9792 0 62.5625 L 0 20.625 L 55 0 L 110 20.625 L 110 62.5625 C 110 79.9792 104.8151 95.8203 94.4453 110.0859 C 84.0755 124.3516 70.9271 133.4896 55 137.5 Z" fill="#FFF"/></mask>
+  </defs>
+  <g clip-path="url(#kachel)">
+    <rect width="160" height="160" fill="url(#grund)"/>
+    <ellipse cx="79.2" cy="-30.4" rx="108" ry="65.6" fill="#FFF" opacity=".15" filter="url(#weich)"/>
+    <path transform="translate(40.32 30.40) scale(0.72145)" d="M 55 137.5 C 39.0729 133.4896 25.9245 124.3516 15.5547 110.0859 C 5.1849 95.8203 0 79.9792 0 62.5625 L 0 20.625 L 55 0 L 110 20.625 L 110 62.5625 C 110 79.9792 104.8151 95.8203 94.4453 110.0859 C 84.0755 124.3516 70.9271 133.4896 55 137.5 Z" fill="url(#wappen)"/>
+    <g clip-path="url(#wappenClip)">
+      <path transform="translate(40.32 30.40) scale(0.72145)" d="M 55 137.5 C 39.0729 133.4896 25.9245 124.3516 15.5547 110.0859 C 5.1849 95.8203 0 79.9792 0 62.5625 L 0 20.625 L 55 0 L 110 20.625 L 110 62.5625 C 110 79.9792 104.8151 95.8203 94.4453 110.0859 C 84.0755 124.3516 70.9271 133.4896 55 137.5 Z" fill="none" stroke="url(#saum)" stroke-width="2.772"/>
+    </g>
+    <g mask="url(#wappenMaske)">
+      <ellipse cx="80" cy="25.44" rx="67.456" ry="38.688" fill="#FFF" opacity=".30" filter="url(#weichS)"/>
+    </g>
+  <path transform="translate(68.459 63.721)" d="M 0 29.581 L 0 0 L 12.374 0 C 14.513 0 16.360 0.361 17.916 1.083 C 19.471 1.805 20.679 2.833 21.540 4.166 C 22.401 5.500 22.832 7.069 22.832 8.874 C 22.832 10.235 22.540 11.444 21.957 12.499 C 21.374 13.555 20.582 14.402 19.582 15.041 C 18.610 15.680 17.527 16.068 16.332 16.207 L 16.124 15.791 C 18.041 15.791 19.513 16.221 20.540 17.082 C 21.596 17.943 22.193 19.263 22.332 21.040 L 23.082 29.581 L 17.582 29.581 L 16.957 21.832 C 16.874 20.665 16.499 19.804 15.832 19.249 C 15.166 18.693 14.055 18.415 12.499 18.415 L 5.416 18.415 L 5.416 29.581 L 0 29.581 Z M 5.416 13.666 L 12.041 13.666 C 13.680 13.666 14.957 13.277 15.874 12.499 C 16.791 11.721 17.249 10.624 17.249 9.208 C 17.249 7.763 16.777 6.652 15.832 5.875 C 14.916 5.097 13.569 4.708 11.791 4.708 L 5.416 4.708 L 5.416 13.666 Z" fill="url(#zeichen)"/>
+  </g>
+  <rect x="1" y="1" width="158" height="158" rx="34.84" fill="none" stroke="url(#rand)" stroke-width="2"/>
+</svg>
