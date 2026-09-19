@@ -20,8 +20,8 @@ RUN wget -qO - https://repositories.intel.com/gpu/intel-graphics.key | gpg --dea
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install --no-cache-dir --break-system-packages \
-        openvino==2026.2.1 \
-        optimum-intel[openvino]==2.0.0 \
+        openvino==2026.4.0 \
+        optimum-intel[openvino]==2.2.0 \
         transformers==4.55.4 \
         fastapi "uvicorn[standard]" "torch>=2.4.0" "tokenizers>=0.21" sentencepiece
 
