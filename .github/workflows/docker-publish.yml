@@ -28,5 +28,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/bayerhazard/aimighty-reranker-cpu/reranker:latest
+            ghcr.io/bayerhazard/aimighty-reranker-cpu/reranker:0.6b-openvino-2026.4.0-opt2.2.0-intel
             ghcr.io/bayerhazard/aimighty-reranker-cpu/reranker:0.6b-openvino-2026.2.1-opt2.0.0-intel
             ghcr.io/bayerhazard/aimighty-reranker-cpu/reranker:${{ github.sha }}

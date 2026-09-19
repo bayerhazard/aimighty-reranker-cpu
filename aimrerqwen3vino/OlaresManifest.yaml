@@ -11,7 +11,7 @@ metadata:
   description: Qwen3-Reranker-0.6B via OpenVINO on CPU / Intel iGPU — Jina/Cohere-compatible /v1/rerank
   appid: aimrerqwen3vino
   title: AIM Qwen3 0.6B Reranker CPU
-  version: '26.9.1'
+  version: '26.9.2'
   categories:
     - AI
 
@@ -25,9 +25,13 @@ entrances:
     authLevel: internal
 
 spec:
-  versionName: '26.9.1'
+  versionName: '26.9.2'
   upgradeDescription: |
-    Initial Release for AImighty Olares One
+    v26.9.2: Fix install blocked by gpu.intel.com/i915 (not allocatable on nodes).
+      Removed i915 resource request; app runs on CPU (entrypoint falls back to CPU).
+      Upgraded OpenVINO 2026.2.1 -> 2026.4.0, optimum-intel 2.0.0 -> 2.2.0,
+      transformers 4.55.4 -> 4.57.6 (optimum 2.2.0 export gate). Performance at parity.
+    v26.9.1: Initial Release for AImighty Olares One
   fullDescription: |
     Qwen3-Reranker-0.6B + OpenVINO on CPU or Intel integrated GPU (iGPU accelerator), optimized for Olares One.
 

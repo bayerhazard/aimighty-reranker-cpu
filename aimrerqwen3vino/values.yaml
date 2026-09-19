@@ -14,7 +14,6 @@ resources:
   limits:
     cpu: '24'
     memory: 16Gi
-    gpu.intel.com/i915: '1'
   requests:
     cpu: '4'
     memory: 6Gi
